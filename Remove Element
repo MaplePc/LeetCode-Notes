@@ -1,0 +1,17 @@
+
+public int removeElement(int[] nums, int val) {
+        int len = nums.length;
+        if(len <= 0)
+            return 0;
+        for(int i = 0; i < len; ){
+            if(nums[i] == val){ //每当发现一个元素的值等于val, 就令其后面的所有元素都向前移动一个位置
+                for(int j = i; j < len - 1; j++){
+                    nums[j] = nums[j + 1];
+                } 
+                len--;
+            }
+            else 
+                i++;    //只有当nums[i]不等于val时,才能i++继续判断下一个; 否则i不应该改变,此时下标i的元素还没有判断
+        }
+        return len;
+    }
