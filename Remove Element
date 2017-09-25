@@ -1,19 +1,20 @@
-class Solution {
+Class Solution {
     public int removeElement(int[] nums, int val) {
         int len = nums.length;
         if(len == 0)
             return 0;
         int i = 0;
-        int j = len - 1; //设置两个指针,分别从首尾两个方向寻找等于val和不等于val的元素, 两个方向都找到后,
-                         //把从尾部往头方向找到的不等于val的元素赋值给从首部往尾方向找到的等于val的元素
-        while(i < j){		//一趟需要判断2i+3j(相对于问题规模)
-            if(nums[i] != val)
+        int j = len - 1;
+        while(true){    //这种方式一趟需要判断2i+2j(相对于问题规模)
+            while(i < j && nums[i] != val)  
                 i++;
-            else if(nums[j] == val)
+            while(i < j && nums[j] == val)
                 j--;
-            else{
-                nums[i++] = nums[j--];
-            }            
+            if(i < j){
+                nums[i++] = nums[j--];	
+            }
+            else
+                break;
         }
         if(nums[j] == val)
             return j;
