@@ -9,19 +9,17 @@ Given input array nums = [3,2,2,3], val = 3
 
 Your function should return length = 2, with the first two elements of nums being 2.
 #####################################################
-public int removeElement(int[] nums, int val) {
+ public int removeElement(int[] nums, int val) {
         int len = nums.length;
         if(len <= 0)
             return 0;
-        for(int i = 0; i < len; ){
-            if(nums[i] == val){ //每当发现一个元素的值等于val, 就令其后面的所有元素都向前移动一个位置
-                for(int j = i; j < len - 1; j++){
-                    nums[j] = nums[j + 1];
-                } 
-                len--;
+        int delta = 0;  //delta是每一个元素在去除不必要的元素后下标的偏移值,假设一开始所有的元素处于恰当的位置; 以后每检测到一个值为val的元素, 令delta++
+        for(int i = 0; i < len; i++){
+            if(nums[i] == val){
+                delta++;
             }
-            else 
-                i++;    //只有当nums[i]不等于val时,才能i++继续判断下一个; 否则i不应该改变,此时下标i的元素还没有判断
+            else if(delta != 0)
+                nums[i - delta] = nums[i]; //通过i-delta得到元素的正确位置
         }
-        return len;
+        return len - delta;
     }
