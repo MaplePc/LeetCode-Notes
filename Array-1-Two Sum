@@ -14,26 +14,17 @@ class Solution {
     public int[] twoSum(int[] nums, int target) {
         int[] result = new int[2];
 		int len = nums.length;
-		HashMap<Integer, Integer> map = new HashMap<>(len); //将数组的值作为键, 数组的下标作为值
-		for (int i = 0; i < len; i++) { //构建数组对应的哈希表
+		HashMap<Integer, Integer> map = new HashMap<>(len);
+		for (int i = 0; i < len; i++) {
 			int key = nums[i];
-			if (key * 2 == target && map.containsKey(key)) { //(因为存在覆盖问题, 所以当两个值*2==target的时候要判断是否哈希表里面已经插入过一个相同的值了, 如果是的话, 就直接结束了)
-				result[0] = map.get(key);
-				result[1] = i;
-				return result;
-			}
-			map.put(key, i);
-		}
-		for (Entry<Integer, Integer> entry : map.entrySet()) { //遍历哈希表,判断是否target的两个加数都在数组中
-			int key = entry.getKey();
-			int value = entry.getValue();
+            
 			int anotherKey = target - key;
-			Integer anotherValue = map.get(anotherKey);
-			if (anotherValue != null && anotherValue != value) {
-				result[0] = value;
-				result[1] = anotherValue;
-				return result;
-			}
+            		if(map.containsKey(anotherKey)){
+                		result[0] = i;
+                		result[1] = map.get(anotherKey);
+               			return result;
+            		}
+			map.put(key, i);
 		}
 		return result;
     }
