@@ -20,24 +20,28 @@ class Solution {
         if(len < 2){
             return;
         }
-        int[] indexArr = new int[len]; //利用一个数组来存放依次找到的最大值的下标
-        int indexArrI = 0; //indexArr数组的下标
-        int maxI = indexArr[indexArrI++] = len - 1;
-        for(int i = len - 2; i > -1; i--){
-            if(nums[i] > nums[maxI]){	//如果找到了新的最大值
-                maxI = i;
-                indexArr[indexArrI++] = i;
-            }
-            else if(nums[i] < nums[maxI]){
-                int targetIndex = search(nums, indexArr, indexArrI, nums[i]); //targetIndex是第一个大于nums[i]的元素的下标
-                swap(nums, i, targetIndex);
-                Arrays.sort(nums, i + 1, len);
-                return;
+        
+        int i = len - 2; 
+        for(; i > -1 && nums[i] >= nums[i + 1]; i--){ //循环的结果: i的后面的元素逆序排列
+            ;
+        }
+        
+        if(i > -1){ //说明nums[i] < nums[i+1]
+            for(int j = len - 1; j > i; j--){	//遍历寻找第一个大于nums[i]的元素
+                if(nums[j] > nums[i]){
+                    swap(nums, i, j); //交换两个元素,并对下标i以后的元素逆序排列
+                    reverse(nums, i + 1);                    
+                    return;
+                }
             }
         }
-        int half = len / 2; //如果数组是降序排列, 则变为升序
-        for(int i = 0; i < half; i++){
-            swap(nums, i, len - 1 - i);
+        else			//完全逆序排列
+            reverse(nums, 0);        
+    }
+    public static void reverse(int[] a, int start){
+        int end = a.length - 1;
+        while(start < end){
+            swap(a, start++, end--);
         }
     }
     public static void swap(int[] a, int i, int j){
@@ -45,33 +49,6 @@ class Solution {
         a[i] = a[j];
         a[j] = t;
     }
-    //类二分查找方法, 但是目的是想把恰大于target的元素找出来
-    /**
-     * @param a 存储具体元素值的数组
-     * @param index 存储数组的最大值的下标的数组, 如{第0次找到的最大值, 第1次找到的最大值, 第2次...}
-     * @param indexLen index数组的长度
-     * @param target 目标元素的值
-     * @return 数组中从尾到头方向第一个大于target的元素的下标
-     */
-    public static int search(int[] a, int[] index, int indexLen, int target){ //
-		int l = 0;
-		int r = indexLen - 1;//
-        int midI = 0;
-		while(l <= r){//
-			midI = l + (r - l) / 2;//
-			int middle = a[index[midI]];
-			if(target < middle){
-				r = midI - 1;
-			}
-			else if(target >= middle){ //此会丢弃等于target的元素
-				l = midI + 1;
-			}
-		}
-        if(r == midI - 1)
-		    return index[midI];
-        else 
-            return index[midI + 1];
-	}
 }
 
 
