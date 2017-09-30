@@ -1,0 +1,12 @@
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int i = nums.length; //定义i为target最终插入的位置
+        for(; i > 0 && target < nums[i - 1]; i--){
+                ;
+        }
+        if(i > 0 && nums[i - 1] == target){ //判断i最终插入的位置的前一个位置的元素的值是否等于target
+            return i - 1;
+        }
+        return i;
+    }
+}
