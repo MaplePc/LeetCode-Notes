@@ -5,25 +5,29 @@ You may assume that nums1 has enough space (size that is greater or equal to m +
 The number of elements initialized in nums1 and nums2 are m and n respectively.
 =====================================================================
 class Solution {
-    public void merge(int[] nums1, int m, int[] nums2, int n) { 
-        if(n == 0)
-            return;
-        if(m == 0 || m > 0 && nums1[m - 1] <= nums2[0]){
-            for(int i = 0; i < n; i++){
-                nums1[m++] = nums2[i];
+    public void merge(int[] nums1, int m, int[] nums2, int n) {         
+        int[] nums = new int[m + n]; //开辟一个新数组
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while(i < m && j < n){ //两个数组的元素间需要最多需要比较和赋值各m + n次
+            if(nums1[i] < nums2[j]){
+                nums[k++] = nums1[i++];
             }
-            return;
-        }    
-            
-        for(int i = 0; i < n; i++){
-            int j = m;
-            for(; j > 0 && nums2[i] < nums1[j - 1]; j--){ // 定义j为插入元素的位置
-                nums1[j] = nums1[j - 1];                    
+            else{
+                nums[k++] = nums2[j++];
             }
-            nums1[j] = nums2[i];
-            m++;
         }
+        while(i < m){
+            nums[k++] = nums1[i++];
+        }
+        while(j < n){
+            nums[k++] = nums2[j++];
+        }
+
+        for(i = 0; i < k; i++){ //新数组nums -> nums1
+            nums1[i] = nums[i];
+        }
+        
     }
 }
-//使用插入排序的方式来合并两个有序数组,效率不高. 原因在于对于每一个nums2中的元素, 
-//都要与nums1中值比其大的元素进行比较并且要把这些元素挪一个位置(时间复杂度O(n2)); 而采用接下来的赋值方式,就可能会减少比较和赋值的次数了
