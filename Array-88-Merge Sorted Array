@@ -6,7 +6,9 @@ The number of elements initialized in nums1 and nums2 are m and n respectively.
 =====================================================================
 class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) { 
-        if(m == 0){
+        if(n == 0)
+            return;
+        if(m == 0 || m > 0 && nums1[m - 1] <= nums2[0]){
             for(int i = 0; i < n; i++){
                 nums1[m++] = nums2[i];
             }
@@ -14,26 +16,14 @@ class Solution {
         }    
             
         for(int i = 0; i < n; i++){
-            int insertPos = binarySearch(nums1, m, nums2[i]);
-            for(int j = m; j > insertPos; j--){ //移动插入位置后面的元素
-                nums1[j] = nums1[j - 1];
+            int j = m;
+            for(; j > 0 && nums2[i] < nums1[j - 1]; j--){ // 定义j为插入元素的位置
+                nums1[j] = nums1[j - 1];                    
             }
-            nums1[insertPos] = nums2[i];
+            nums1[j] = nums2[i];
             m++;
         }
     }
-    public int binarySearch(int[] nums, int r, int target){ //折半查找插入位置
-        int l = 0;
-        int mid = 0;
-        while(l < r){
-            mid = l + (r - l) / 2;
-            if(target >= nums[mid]){
-                l = mid + 1;
-            }
-            else{
-                r = mid;
-            }
-        }
-        return l;
-    }
 }
+//使用插入排序的方式来合并两个有序数组,效率不高. 原因在于对于每一个nums2中的元素, 
+//都要与nums1中值比其大的元素进行比较并且要把这些元素挪一个位置(时间复杂度O(n2)); 而采用接下来的赋值方式,就可能会减少比较和赋值的次数了
