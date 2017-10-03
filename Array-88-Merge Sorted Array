@@ -6,28 +6,23 @@ The number of elements initialized in nums1 and nums2 are m and n respectively.
 =====================================================================
 class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) {         
-        int[] nums = new int[m + n]; //开辟一个新数组
-        int i = 0;
-        int j = 0;
-        int k = 0;
-        while(i < m && j < n){ //两个数组的元素间需要最多需要比较和赋值各m + n次
-            if(nums1[i] < nums2[j]){
-                nums[k++] = nums1[i++];
+        int i = m - 1;
+        int j = n - 1;
+        int k = m + n - 1;
+        while(i > -1 && j > -1){ //两个数组的元素间需要最多需要比较和赋值各m + n次
+            if(nums1[i] > nums2[j]){
+                nums1[k--] = nums1[i--];
             }
             else{
-                nums[k++] = nums2[j++];
+                nums1[k--] = nums2[j--];
             }
         }
-        while(i < m){
-            nums[k++] = nums1[i++];
+        while(i > -1){
+            nums1[k--] = nums1[i--];
         }
-        while(j < n){
-            nums[k++] = nums2[j++];
+        while(j > -1){
+            nums1[k--] = nums2[j--];
         }
-
-        for(i = 0; i < k; i++){ //新数组nums -> nums1
-            nums1[i] = nums[i];
-        }
-        
+        //不用开辟新数组
     }
 }
