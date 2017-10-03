@@ -1,0 +1,27 @@
+Given a non-negative integer represented as a non-empty array of digits, plus one to the integer.
+//给定一个用非空数字数组表示的非负整数, 对该非负整数自增操作
+
+You may assume the integer do not contain any leading zero, except the number 0 itself.
+
+The digits are stored such that the most significant digit is at the head of the list.
+==============================================================================
+class Solution {
+    public int[] plusOne(int[] digits) {
+        if(digits[0] == 0){ //第一个是0,说明这个整数就是0
+            digits[0] = 1; 
+            return digits;
+        }
+        
+        for(int i = digits.length - 1; i > -1; i--){
+            if(digits[i] < 9){ //如果该位<9,加一后不能进位,return
+                digits[i]++;
+                return digits;
+            }
+            digits[i] = 0; //进位, 令该位为0
+        }
+        int[] res = new int[digits.length + 1]; //一直进位, 说明应该是从 n个9 变成 1后面n个0
+        res[0] = 1;
+        
+        return res;
+    }
+}
