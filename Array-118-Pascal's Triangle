@@ -13,21 +13,21 @@ Return
 ===================================================================
 class Solution {
     public List<List<Integer>> generate(int numRows) {
-        List<List<Integer>> intList = new ArrayList<List<Integer>>(numRows);
-        List<Integer> lastList = null; //保存上一个list的引用
+        int[][] intArray = new int[numRows][];
+        int[] lastArray = null;
         for(int i = 0; i < numRows; i++){ //i为每一行的最大下标
-            List<Integer> list = new ArrayList<Integer>(i + 1);
+            int[] array = new int[i + 1];
             for(int j = 0; j <= i; j++){
                 if(j == 0 || j == i){
-                    list.add(1);
+                    array[j] = 1;
                 }
                 else{
-                    list.add(lastList.get(j - 1) + lastList.get(j));
+                    array[j] = lastArray[j - 1] + lastArray[j];
                 }
             }
-            intList.add(list);
-            lastList = list;
+            intArray[i] = array;
+            lastArray= array;
         }
-        return intList;
+        return (List)Arrays.asList(intArray);
     }
 }
