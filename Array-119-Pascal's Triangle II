@@ -8,18 +8,26 @@ Could you optimize your algorithm to use only O(k) extra space?
 =================================================================
 class Solution {
     public List<Integer> getRow(int rowIndex) {
-        int[] array = new int[rowIndex + 1]; //这里使用一维数组, 空间为rowIndex + 1, 即空间复杂度为O(n)
-        for(int i = 0; i <= rowIndex; i++){ //i为每一个行最后一个元素的下标
-            int temp = array[0] = 1;        
-            for(int j = 1; j < i; j++){     //在这里, temp为上一行下标为j - 1的元素值, 即array[i-1][j-1](当使用二维数组时)
-                array[j] = temp +  (temp = array[j]); //等价于使用array[i-1][j-1] + array[i-1][j](当使用二维数组时)
-            }
-            array[i] = 1;
-        }
         List<Integer> intList = new ArrayList<>(rowIndex + 1);
-        for(int i = 0; i <= rowIndex; i++){ //不能直接使用(List)Arrays.asList(array),asList方法会把int[]作为一个元素直接转换,这样会得到List<int[]>
-            intList.add(array[i]);
+        intList.add(1);
+        if(rowIndex == 0)
+            return intList;
+        long temp = 1; //防止溢出
+        for(int i = 1; i < rowIndex; i++){ //i为每一个行最后一个元素的下标
+            temp = temp * (rowIndex - i + 1) / i; //如果temp *= (rowIndex - i + 1) / i,会先算(rowIndex - i + 1)/i这部分,可能会出现小数舍入的问题 
+            intList.add((int)temp);
         }
+        intList.add(1);
+        
         return intList;
     }
 }
+=================================================================
+科普一下:
+    杨辉三角，是二项式系数在三角形中的一种几何排列。在欧洲，这个表叫做帕斯卡三角形。
+    帕斯卡（1623----1662）是在1654年发现这一规律的，比杨辉要迟393年，比贾宪迟600年。
+                                                            ---摘自百度百科
+公式:
+    第n行的m个数可表示为 C(n-1，m-1)，即为从n-1个不同元素中取m-1个元素的组合数。(从1开始计数)
+可计算得出第m个数和第m-1个数的关系: C(n-1, m-1) = C(n-2, m-2) * (n-m+1) / (m-1);
+若下标从0开始, 则C(n, m) = C(n-1, m-1) * (n-m+1) / m;
