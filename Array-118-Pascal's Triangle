@@ -17,17 +17,14 @@ class Solution {
         int[] lastArray = null;
         for(int i = 0; i < numRows; i++){ //i为每一行的最大下标
             int[] array = new int[i + 1];
-            for(int j = 0; j <= i; j++){
-                if(j == 0 || j == i){
-                    array[j] = 1;
-                }
-                else{
-                    array[j] = lastArray[j - 1] + lastArray[j];
-                }
+            array[0] = 1;   //小优化,避免每一次都判断j是否等于0或i
+            for(int j = 1; j < i; j++){
+                array[j] = lastArray[j - 1] + lastArray[j];
             }
+            array[i] = 1;   //
             intArray[i] = array;
             lastArray= array;
         }
-        return (List)Arrays.asList(intArray);
+        return (List)Arrays.asList(intArray); //将Arrays.asList(int[])类型为List<int[]>的结果的类型转换为List
     }
 }
