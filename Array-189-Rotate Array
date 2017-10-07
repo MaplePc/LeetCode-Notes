@@ -1,0 +1,28 @@
+Rotate an array of n elements to the right by k steps.
+
+For example, with n = 7 and k = 3, the array [1,2,3,4,5,6,7] is rotated to [5,6,7,1,2,3,4].
+
+Note:
+Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+==============================================================
+class Solution {
+    public void rotate(int[] nums, int k) {
+        int len = nums.length;
+        if(len < 2 || k % len == 0){
+            return;
+        }
+        k = k % len; //rotate是一个周期操作,取模能简化
+        int[] copy = new int[len];
+        
+        int i = 0;
+        for(; i <= len - 1 - k; i++){ //将数组的前面部分放到新数组的靠后位置
+            copy[i + k] = nums[i];
+        }    
+        for(; i < len; i++){ //将数组的后面部分放到新数组的靠前位置
+            copy[i - (len - k)] = nums[i];
+        }
+        for(i = 0; i < len; i++){ 
+            nums[i] = copy[i];
+        }
+    }
+}
