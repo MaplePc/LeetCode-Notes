@@ -4,20 +4,21 @@ You may assume that the array is non-empty and the majority element always exist
 =====================================================
 class Solution {
     public int majorityElement(int[] nums) {
-        int halfLen = nums.length / 2;
-        Arrays.sort(nums); //快排
-        int startPos = 0;
         int value = nums[0];
+        int count = 1;
         for(int i = 1; i < nums.length; i++){
             if(nums[i] != value){
-                if(i - startPos > halfLen){
-                    return value;
-                }
-                startPos = i;
-                value = nums[i];
+                count--;
+                if(count == 0){
+                    value = nums[i];
+                    count = 1;
+                }                
+            }
+            else{
+                count++;
             }
         }
         return value;
     }
 }
-//4ms~5ms
+//2ms
