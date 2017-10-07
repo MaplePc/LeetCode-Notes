@@ -1,0 +1,25 @@
+Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.
+
+You may assume that the array is non-empty and the majority element always exist in the array.
+=====================================================
+class Solution {
+    public int majorityElement(int[] nums) {
+        //n /2}
+        int halfLen = nums.length / 2;
+        HashMap<Integer, Integer> map = new HashMap<>(nums.length);
+        for(int i = 0; i < nums.length; i++){
+            Integer times = map.get(nums[i]);
+            if(times == null){
+                map.put(nums[i], 1);
+            }
+            else{
+                map.put(nums[i], times + 1);
+                if(times + 1 > halfLen){
+                    return nums[i];
+                }
+            }
+        }
+        return nums[0];
+    }
+}
+//30ms~40ms
