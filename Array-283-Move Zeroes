@@ -9,27 +9,15 @@ Minimize the total number of operations.
 class Solution {
     public void moveZeroes(int[] nums) {
         int len = nums.length;
-        int offset = 0; //每遇到一个0, 其后的所有元素都需要往前挪的距离
-        boolean start = false; //一段非零的序列是否存在
-        int startI = 0; //非零序列的其实下标
+        int newI = 0;  //每一个非零元素的新下标
         for(int i = 0; i < len; i++){
-            if(nums[i] == 0){
-                if(start)
-                    System.arraycopy(nums, startI, nums, startI - offset, i - startI); //数组复制
-                start = false;
-                offset++;
-            }
-            else{
-                if(!start){ //非零序列开始
-                    start = true;
-                    startI = i;
-                }
+            if(nums[i] != 0){
+                nums[newI++] = nums[i];
             }
         }
-        if(start)
-            System.arraycopy(nums, startI, nums, startI - offset, len - startI);
-        //start
-        Arrays.fill(nums, len - offset, len, 0);    //往[len-offset, len)范围内的元素填充0
+        // Arrays.fill(nums, newI, len, 0);
+        for(int i = newI; i < len; i++){
+            nums[i] = 0;
+        }
     }
 }
-//22%
