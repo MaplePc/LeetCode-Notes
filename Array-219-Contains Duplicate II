@@ -3,17 +3,18 @@ in the array such that nums[i] = nums[j] and the absolute difference between i a
 =============================================
 class Solution {
     public boolean containsNearbyDuplicate(int[] nums, int k) {
-        int len = nums.length;
-        if(len < 2)
-            return false; 
-        HashSet<Integer> set = new HashSet<>(k);
-        for(int i = 0; i < len; i++){
-            if(i > k)                // 当i = k + 1, k + 2...时, i与最前面的元素的下标的差值已经大于k, 无论前面有没有与nums[i]值相等都删除
-                set.remove(nums[i - k - 1]);
-            if(!set.add(nums[i])) //发生冲突
-                return true;
+        int N = nums.length;
+        if (k >= 35000) return false;
+        int i = 0;
+        for (int num: nums){
+            for (int j = Math.min(i+k, N-1); j>i; --j)
+                if (nums[j] == num) return true;
+            ++i;
         }
         return false;
     }
 }
-//98%
+//99% GG,O(n2)的算法都打败了绝大多数解法(包括许多时间复杂度O(n)的), 说明数据集n太小了
+
+//这道题: 蛮力法O(n2) < HashSet O(n) < 对二维数组或构造带下标和值的新类进行排序 < HashMap, 
+//另外Hash数组的方法失效了, 因为有一组数据分别设置了Integer.MAXVALUE和Integer.MINVALUE
