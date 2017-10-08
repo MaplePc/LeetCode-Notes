@@ -1,17 +1,47 @@
 Given an array of integers and an integer k, find out whether there are two distinct indices i and j 
 in the array such that nums[i] = nums[j] and the absolute difference between i and j is at most k.
 =============================================
+import java.util.Comparator;
 class Solution {
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         int len = nums.length;
-        HashMap<Integer, Integer> map = new HashMap<>(len);//key为nums[i], value为i
+        if(len < 2)
+            return false; 
+        ValueIndex[] values = new ValueIndex[len];
         for(int i = 0; i < len; i++){
-            Integer index = map.put(nums[i], i); //map.put()返回map中原有的键映射的value(可以为null), 或null(不存在键)
-            if(index != null && i - index <= k){ //注意index要求非null,否则抛异常
+            values[i] = new ValueIndex(nums[i], i);
+        }
+        Arrays.sort(values, values[0].new VComparator()); //稳定的排序算法, 所以接下来直接比较相邻的value相等的对象的index就好了
+        for(int i = 1; i < len; i++){
+            if(values[i].value == values[i - 1].value 
+               && values[i].index - values[i - 1].index <= k){
                 return true;
             }
         }
         return false;
     }
 }
-//87%
+
+class ValueIndex{
+    public int value;
+    public int index;
+    public ValueIndex(int v, int i) {
+        value = v;
+        index = i;
+    }
+    class VComparator implements Comparator{
+        @Override
+        public int compare(Object o1, Object o2){
+            ValueIndex v1 = (ValueIndex)o1;
+            ValueIndex v2 = (ValueIndex)o2;
+            if(v1.value < v2.value){
+                return -1;
+            }
+            else if(v1.value == v2.value){
+                return 0;
+            }
+            return 1;
+        }
+    }                  
+}
+//98%
