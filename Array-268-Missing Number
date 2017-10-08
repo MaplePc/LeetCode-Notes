@@ -7,16 +7,24 @@ Note:
 Your algorithm should run in linear runtime complexity. Could you implement it using only constant extra space complexity?
 ===============================
 class Solution {
-    public int missingNumber(int[] nums) { //寻找丢失的数应该存在的位置
-        int len = nums.length;
-        boolean[] hash = new boolean[len + 1];
-        for(int v : nums)
-            hash[v] = true;
-        for(int i = 0; i < len + 1; i++){
-            if(!hash[i])
-                return i;
+    public int missingNumber(int[] nums) {
+        int missing = 0; //1)
+        for(int i = 0; i < nums.length; i++){
+            missing ^= i + 1; //2)
+            missing ^= nums[i]; //3)
         }
-        return 0;
+        return missing;
     }
 }
-//22%, 第二个柱形
+//35% 第一个柱形
+
+//异或运算同时满足交换律和结合律, 所以像普通的加法和乘法运算那样, 可以任意选择操作数运算的组合和次序
+//同时, 有两条重要的规则:
+//a ^ 0 = a
+//a ^ a = 0
+//因此,   (a ^ b ^ c ^ d ^ e ) ^ (d ^ a ^ e ^ c) 
+//      = (a ^ a) ^ b ^ (c ^ c) ^ (d ^ d) ^ (e ^ e)
+//      = b
+//以上就是所有的解题理论基础
+// 1)和2)处添加的操作数: 0, 1, 2, ..., n
+// 3)处添加的操作数: 上一行中剔除misssingNum后的部分
