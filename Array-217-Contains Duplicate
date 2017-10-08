@@ -4,13 +4,30 @@ and it should return false if every element is distinct.
 =======================================
 class Solution {
     public boolean containsDuplicate(int[] nums) {
-        HashSet<Integer> set = new HashSet<>(nums.length);
-        for(int i = 0; i < nums.length; i++){
-            if(false == set.add(nums[i])){
+        int len = nums.length;
+        if(len < 2){
+            return false;
+        }
+        int max = nums[0];
+        int min = nums[len - 1]; //找出nums的最大值和最小值
+        for(int v : nums){
+            if(v > max)
+                max = v;
+            else if(v < min) 
+                min = v;
+        }
+        boolean[] hash = new boolean[max - min + 1]; //用最大值最小值的差值+1的空间大小建立散列空间
+        for(int v : nums){
+            if(hash[v - min]){ //此值没进行过散列
                 return true;
-            } 
+            }
+            else{
+                hash[v - min] = true; //进行过散列, 即重复
+            }
         }
         return false;
     }
 }
-//16ms; 60%
+//3ms, 99%
+//查看了lc上面的耗时分布,非常有意思, 一点小小的改动也会对耗时产生较大影响:
+//Hash数组(3ms-5ms) < Arrays.sort(5ms-9ms) < HashSet + set.add()返回值(13ms-16ms)< HashSet全部转化 + 利用set.size()(16ms-18ms) <  HashSet + set.contains()返回值(18ms-25+ms)
