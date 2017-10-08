@@ -4,14 +4,16 @@ and it should return false if every element is distinct.
 =======================================
 class Solution {
     public boolean containsDuplicate(int[] nums) {
-        HashSet<Integer> set = new HashSet<>(nums.length); //使用HashSet来获得元素个数
+        HashSet<Integer> set = new HashSet<>(nums.length);
         for(int i = 0; i < nums.length; i++){
-            set.add(nums[i]);
+            if(set.contains(nums[i])){
+                return true;
+            }
+            else{
+                set.add(nums[i]);                
+            }
         }
-        if(set.size() == nums.length)
-            return false;
-        else
-            return true;
+        return false;
     }
 }
-//16ms,60%
+//23ms, 12% GG
