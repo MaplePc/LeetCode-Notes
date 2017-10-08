@@ -6,26 +6,14 @@ class Solution {
         int len = nums.length;
         if(len < 2)
             return false; 
-        
-        int min = nums[0];
-        int max = nums[len - 1];
-        for(int v : nums){
-            if(v > max)
-                max = v;
-            else if(v < min)
-                min = v;
-        }
-        int[] hash = new int[max - min + 1]; //默认值全是0, 接下来把所有元素的下标 + 1再hash映射
-                                                                        
+        HashSet<Integer> set = new HashSet<>(k);
         for(int i = 0; i < len; i++){
-            int index = hash[nums[i] - min];
-            if(index > 0 && i + 1 - index <= k){
+            if(i > k)                // 当i = k + 1, k + 2...时, i与最前面的元素的下标的差值已经大于k, 无论前面有没有与nums[i]值相等都删除
+                set.remove(nums[i - k - 1]);
+            if(!set.add(nums[i])) //发生冲突
                 return true;
-            }
-            hash[nums[i] - min] = i + 1;
         }
         return false;
     }
 }
-//这题爆不了, 因为max可取2147483647, 同时min可取-2147483648, max + min == 0, GG
-//failed
+//98%
