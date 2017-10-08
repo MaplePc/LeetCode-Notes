@@ -8,20 +8,15 @@ Your algorithm should run in linear runtime complexity. Could you implement it u
 ===============================
 class Solution {
     public int missingNumber(int[] nums) { //寻找丢失的数应该存在的位置
-        Arrays.sort(nums);
         int len = nums.length;
-        int l = 0;
-        int r = len;
-        int mid = 0;
-        while(l < r){
-            mid = l + (r - l) / 2;
-            if(nums[mid] == mid)
-                l = mid + 1;
-            else
-                r = mid;
+        boolean[] hash = new boolean[len + 1];
+        for(int v : nums)
+            hash[v] = true;
+        for(int i = 0; i < len + 1; i++){
+            if(!hash[i])
+                return i;
         }
-        return l;
+        return 0;
     }
 }
-//11%
-//没看清楚题目,以为数组是升序的, 如果数组已经是升序的话, 那么这个算法就是O(lgn)
+//22%, 第二个柱形
