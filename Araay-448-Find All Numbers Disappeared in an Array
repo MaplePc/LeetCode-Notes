@@ -13,33 +13,20 @@ Output:
 [5,6]
 =========================================================
 class Solution {
-	public List<Integer> findDisappearedNumbers(int[] nums) {
-		int len = nums.length;
-		for (int i = 0; i < len; i++) {
-			if (nums[i] == i + 1) // 如果位置正确, nums[i] 应该等于 i + 1
-				continue;
-			int t1 = nums[nums[i] - 1];
-			nums[nums[i] - 1] = nums[i];
-			while (true) {          //使用两个变量t1, t2作为中间变量, 存储不在正确位置的值, 然后放到正确的位置
-				if (t1 == nums[t1 - 1])
-					break;
-				int t2 = nums[t1 - 1];
-				nums[t1 - 1] = t1;
-
-				if (t2 == nums[t2 - 1])
-					break;
-				t1 = nums[t2 - 1];
-				nums[t2 - 1] = t2;
-			}
-		}
-
-		List<Integer> list = new ArrayList<>(len);
-		for (int i = 0; i < len; i++) {
-			if (nums[i] != i + 1)
-				list.add(i + 1);
-		}
-		return list;
-	}
-
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> res = new ArrayList<Integer>();
+        for(int i=0;i<nums.length;i++){
+            int val = Math.abs(nums[i]) -1;
+            if(nums[val]>0){		//将下标为val的值变为负数, 表明val + 1的值存于数组某处		
+                nums[val] = -nums[val];
+            }
+        }
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]>0){
+                res.add(i+1);
+            }
+        }
+        return res;
+    }
 }
 //65%
