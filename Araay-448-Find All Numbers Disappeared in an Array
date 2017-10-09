@@ -13,28 +13,25 @@ Output:
 [5,6]
 =========================================================
 class Solution {
-	public List<Integer> findDisappearedNumbers(int[] nums) {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
         int len = nums.length;
-        if(len == 0)
-            return new ArrayList<Integer>(1);
-        Arrays.sort(nums);
-        
-		List<Integer> list = new ArrayList<>(len);
-        for(int j = 1; j < nums[0]; j++){ //缺失的值出现在数组最前面
-             list.add(j);
+        for(int i = 0; i < len; i++){
+            if(nums[i] != i + 1)    //如果位置正确, nums[i] == i + 1
+                positioning(nums, nums[i]); //使元素放到正确的位置
         }
-		for (int i = 1; i < len; i++) {
-            if(nums[i] - nums[i - 1] > 1){ //检测到缺失值
-                for(int j = nums[i - 1] + 1; j < nums[i]; j++){
-                    list.add(j);
-                }
-            }
+        List<Integer> list = new ArrayList<>(len / 3 + 1);
+        for(int i = 0; i < len; i++){
+            if(nums[i] != i + 1)
+                list.add(i + 1);
         }
-        for(int j = nums[len - 1]; j < len; j++){ //缺失的值出现在数组最后面
-             list.add(j + 1);
-        }
-		return list;
-	}
-
+        return list;
+    }
+    public void positioning(int[] nums, int value){
+            int t = nums[value - 1]; //取得value元素正确位置上的值
+            nums[value - 1] = value; //将value元素放到正确的位置
+            if(t != nums[t - 1])     //如果value元素正确位置上原来的值t的正确位置上的值不等于t
+                positioning(nums, t); //使元素t放到正确的位置
+    }
+    
 }
-//11%
+//60%
