@@ -18,21 +18,39 @@ Output: 1
 Explanation: Note that the third maximum here means the third maximum distinct number.
 Both numbers with value 2 are both considered as second maximum.
 =================================================
-import java.util.TreeSet;
 class Solution {
     public int thirdMax(int[] nums) {
-        Arrays.sort(nums);
-        int count = 1;
         int len = nums.length;
-        for(int i = len - 2; i > -1; i--){
-            if(nums[i] != nums[i + 1])
-            {
-                 count++;
-                if(count > 2)
-                    return nums[i];
-            }   
+        int max_1 = nums[0]; //最大值
+        int max_2 = Integer.MIN_VALUE; //次大值, 初始为未赋值状态
+        int max_3 = max_2; //第三大值, 初始为未赋值状态
+        boolean[] assigned = new boolean[2]; //赋值状态数组, assigned[0], assigned[0]分别代表max_2, max_3的状态
+        int count = 0; //assigned数组的下标
+        for(int i = 1; i < len; i++){
+            int v = nums[i];
+            if(v > max_1){
+                    max_3 = max_2;
+                    max_2 = max_1;
+                    max_1 = v;    
+                    if(count < 2)
+                        assigned[count++] = true;
+            }
+            else if(v < max_1 && (v > max_2 || !assigned[0])) { //注意: 或运算是"短路求值"的, 运算式调换次序会带来不同结果
+                max_3 = max_2;
+                max_2 = v;
+                if(count < 2)
+                        assigned[count++] = true;
+            }
+            else if(v < max_2 && (v > max_3 || !assigned[1])){
+                assigned[1] = true;
+                max_3 = v;
+            }
         }
-        return nums[len - 1];
+        if(assigned[1]) //第三大值被赋值(找到)
+            return max_3;
+        else
+            return max_1;
     }
 }
-//65%
+//98%
+//提交后看到有人用Iteger类型的null来表示没有赋值, 但有没有赋值其实一般只在开头几次判断而已, 使用包装器类型会对后面的判断和赋值产生额外的开销
