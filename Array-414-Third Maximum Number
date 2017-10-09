@@ -21,21 +21,18 @@ Both numbers with value 2 are both considered as second maximum.
 import java.util.TreeSet;
 class Solution {
     public int thirdMax(int[] nums) {
-        TreeSet<Integer> set = new TreeSet<>(); //元素按值迭代, 使用红黑树实现; 不能指定初始值
-        for(int v : nums){
-            set.add(v);            
+        Arrays.sort(nums);
+        int count = 1;
+        int len = nums.length;
+        for(int i = len - 2; i > -1; i--){
+            if(nums[i] != nums[i + 1])
+            {
+                 count++;
+                if(count > 2)
+                    return nums[i];
+            }   
         }
-        int[] values = new int[3];
-        int index = 0;
-        for(Iterator iterator = set.descendingIterator(); index < 3 && iterator.hasNext();){ //降序迭代
-			      values[index++] = (Integer)iterator.next();
-		    }
-        if(index == 3){
-            return values[2];
-        }
-        else{
-            return values[0];
-        }
+        return nums[len - 1];
     }
 }
-//7%
+//65%
