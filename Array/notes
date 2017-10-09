@@ -1,0 +1,10 @@
+一、排序
+  1.Array.sort()
+  2.TreeMap：对键集按序迭代
+  3.TreeSet：对值按序迭代
+二、Hash映射
+  1.使用数组，数组的空间取max - min - 1（当数组中的元素取得MAX_VALUE和MIN_VALUE时发生溢出），hash（x-min）= x
+  2.使用HashMap：对key进行Hash，以便快速访问key所对应的value
+  3.使用HashSet：快速访问值
+三、二分查找及其变形
+  针对有序元素
