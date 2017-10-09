@@ -1,0 +1,40 @@
+Given an array of integers where 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
+
+Find all the elements of [1, n] inclusive that do not appear in this array.
+
+Could you do it without extra space and in O(n) runtime? You may assume the returned list does not count as extra space.
+
+Example:
+
+Input:
+[4,3,2,7,8,2,3,1]
+
+Output:
+[5,6]
+=========================================================
+class Solution {
+	public List<Integer> findDisappearedNumbers(int[] nums) {
+        int len = nums.length;
+        if(len == 0)
+            return new ArrayList<Integer>(1);
+        Arrays.sort(nums);
+        
+		List<Integer> list = new ArrayList<>(len);
+        for(int j = 1; j < nums[0]; j++){ //缺失的值出现在数组最前面
+             list.add(j);
+        }
+		for (int i = 1; i < len; i++) {
+            if(nums[i] - nums[i - 1] > 1){ //检测到缺失值
+                for(int j = nums[i - 1] + 1; j < nums[i]; j++){
+                    list.add(j);
+                }
+            }
+        }
+        for(int j = nums[len - 1]; j < len; j++){ //缺失的值出现在数组最后面
+             list.add(j + 1);
+        }
+		return list;
+	}
+
+}
+//11%
