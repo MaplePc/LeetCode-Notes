@@ -9,15 +9,33 @@ Note:
 n is a positive integer, which is in the range of [1, 10000].
 All the integers in the array will be in the range of [-10000, 10000].
 ===================================================
+import java.util.Map.Entry;
 class Solution {
     public int arrayPairSum(int[] nums) {
         int len = nums.length;        
-        Arrays.sort(nums);
-        int sum = 0;
-        for(int i = 0; i < len; i += 2){ //注意这里不用i++
-                sum += nums[i];//pairs每一趟都取最小的两个数
+        TreeMap<Integer, Integer> map = new TreeMap<>(); //key为数组元素值, value为元素出现次数
+        for(int v : nums){
+            if(map.containsKey(v)){
+                map.put(v, map.get(v) + 1);
+            }
+            else
+                map.put(v, 1);
         }
+        int lastValue = 0;
+        int lastCount = 0;
+        int sum = 0;
+        for(Entry<Integer, Integer> e : map.entrySet()){
+            int k = e.getKey();   //元素值
+            int v = e.getValue(); //出现次数
+            if(lastCount == 1){
+                sum += lastValue;
+                v--;
+            }	
+            sum += v / 2 * k;
+            lastCount = v % 2;
+            lastValue = k;
+		}
         return sum;
     }
 }
-//50%
+//1%
