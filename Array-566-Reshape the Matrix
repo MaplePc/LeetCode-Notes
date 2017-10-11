@@ -16,8 +16,11 @@ class Solution {
 		int j = 0;
 		int i = 0;
 		for (int y = 0; y < r; y++) {
-			for (int x = 0; x < c; x++) {
-				res[y][x] = nums[j][i++];
+			for (int x = 0; x < c;) {
+                int copyLen = Math.min(w - i, c - x);
+                System.arraycopy(nums[j], i, res[y], x, copyLen);
+                i += copyLen;
+                x += copyLen;
 				if (i == w) {       //到达行尾
 					j++;            //换行
 					i = 0;          //回车
@@ -27,4 +30,4 @@ class Solution {
 		return res;
 	}
 }
-//60%-90%
+//40%
