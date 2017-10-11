@@ -21,41 +21,32 @@ All the integers in the given input belong to the range: [-1e7, 1e7].
 class Solution {
     public int findPairs(int[] nums, int k) {
         int len = nums.length;
-        if(k < 0 || len < 1)
+        if(k < 0 || len < 2){
             return 0;
-        Arrays.sort(nums);      //数组排序
-        int count = 0;
-        if(k == 0){
-            boolean repeat = false; //同一个值是否是否出现>=2次
-            for(int i = 1; i < len; i++){
-                if(nums[i] == nums[i - 1]){
-                    if(repeat == false){
-                        count++;
-                        repeat = true;                        
-                    }
-                }
-                else{
-                    repeat = false;
-                }
-            }
         }
-        else{
-            int[] arr = new int[len];
-            arr[0] = nums[0];
-            int newLen = 1;
-            for(int i = 1; i < len; i++){   //复制数组, 值相等的元素只保留一个
-                if(nums[i] != nums[i - 1]){
-                    arr[newLen++] = nums[i];
-                }
+        Arrays.sort(nums);
+        int i = 0; 
+        int j = 0;
+        int count = 0;
+        while(j < len){
+            int diff = nums[j] - nums[i];
+            if(diff == k && i != j){
+                count++;
+                i++;
+                j++;
+                while(i < len && nums[i] == nums[i - 1]) //跳过相同的元素值
+                    i++;
+                while(j < len && nums[j] == nums[j - 1]) //跳过相同的元素值
+                    j++;
             }
-            for(int i = 0; i < newLen - 1; i++){
-                int pos = Arrays.binarySearch(arr, i + 1, Math.min(newLen, i + k + 1), arr[i] + k);//使用二分查找,注意一点: 元素值+k的下标<=i+k
-                if(pos > 0) 
-                    count++;
+            else if(diff > k){
+                i++;
             }
-            
+            else{
+                j++;
+            }
         }
         return count;
     }
 }
-//94%
+//96%
