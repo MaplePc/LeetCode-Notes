@@ -9,33 +9,41 @@ Note:
 n is a positive integer, which is in the range of [1, 10000].
 All the integers in the array will be in the range of [-10000, 10000].
 ===================================================
-import java.util.Map.Entry;
 class Solution {
     public int arrayPairSum(int[] nums) {
-        int len = nums.length;        
-        TreeMap<Integer, Integer> map = new TreeMap<>(); //key为数组元素值, value为元素出现次数
+        int len = nums.length; 
+        int max = nums[0];
+        int min = nums[0];
         for(int v : nums){
-            if(map.containsKey(v)){
-                map.put(v, map.get(v) + 1);
-            }
-            else
-                map.put(v, 1);
+            if(v > max)
+                max = v;
+            else if(v < min)
+                min = v;
         }
-        int lastValue = 0;
-        int lastCount = 0;
+        
+        int[] hash = new int[max - min + 1];
+        for(int v : nums){
+            hash[v - min]++;
+        }
+        
+        int lastValue = 0; //比当前值小的值
+        int lastCount = 0; //比当前值小的值的个数
         int sum = 0;
-        for(Entry<Integer, Integer> e : map.entrySet()){
-            int k = e.getKey();   //元素值
-            int v = e.getValue(); //出现次数
-            if(lastCount == 1){
-                sum += lastValue;
-                v--;
-            }	
-            sum += v / 2 * k;
-            lastCount = v % 2;
-            lastValue = k;
-		}
+        int hashLen = hash.length;
+        for(int i = 0; i < hashLen; i++){
+            if(hash[i] > 0){ //元素值存在
+                if(lastCount == 1){ //恰比其小的元素个数余1
+                    sum += lastValue; //(lastValue, i + min)组成一pair
+                    hash[i]--;
+                }
+                sum += hash[i] / 2 * (i + min); //求(i + min, i + min)的组合数
+                hash[i] %= 2;
+                
+                lastValue = i + min;    //保存当前值和个数
+                lastCount = hash[i];
+            }
+        }
         return sum;
     }
 }
-//1%
+//99%
