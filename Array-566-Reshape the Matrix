@@ -1,0 +1,30 @@
+In MATLAB, there is a very useful function called 'reshape', which can reshape a matrix into a new one with different size but keep its original data.
+
+You're given a matrix represented by a two-dimensional array, and two positive integers r and c representing the row number and column number of the wanted reshaped matrix, respectively.
+
+The reshaped matrix need to be filled with all the elements of the original matrix in the same row-traversing order as they were.
+
+If the 'reshape' operation with given parameters is possible and legal, output the new reshaped matrix; Otherwise, output the original matrix.
+=============================================
+class Solution {
+    public int[][] matrixReshape(int[][] nums, int r, int c) {
+		int h = nums.length;
+		int w = nums[0].length;
+		if (h * w != r * c || h == r) //如果面积不相等或长宽与原来完全一样
+			return nums;
+		int[][] res = new int[r][c];
+		int j = 0;
+		int i = 0;
+		for (int y = 0; y < r; y++) {
+			for (int x = 0; x < c; x++) {
+				res[y][x] = nums[j][i++];
+				if (i == w) {       //到达行尾
+					j++;            //换行
+					i = 0;          //回车
+				}
+			}
+		}
+		return res;
+	}
+}
+//60%-90%
