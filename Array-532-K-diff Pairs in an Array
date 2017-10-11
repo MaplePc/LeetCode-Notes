@@ -18,38 +18,44 @@ The pairs (i, j) and (j, i) count as the same pair.
 The length of the array won't exceed 10,000.
 All the integers in the given input belong to the range: [-1e7, 1e7].
 =====================================================
-
 class Solution {
     public int findPairs(int[] nums, int k) {
         int len = nums.length;
         if(k < 0 || len < 1)
             return 0;
-        HashSet<Integer> set = new HashSet<>(len);
+        Arrays.sort(nums);      //数组排序
+        int count = 0;
         if(k == 0){
-            HashSet<Integer> duplicateSet = new HashSet<>(); //使用两个HashSet来寻找出现了至少2次的元素
-            for(int v : nums){
-                if(!set.add(v)){    //如果之前set中有v, 返回false
-                    duplicateSet.add(v);
+            boolean repeat = false; //同一个值是否是否出现>=2次
+            for(int i = 1; i < len; i++){
+                if(nums[i] == nums[i - 1]){
+                    if(repeat == false){
+                        count++;
+                        repeat = true;                        
+                    }
+                }
+                else{
+                    repeat = false;
                 }
             }
-            return duplicateSet.size();
         }
         else{
-            for(int v : nums){
-                set.add(v);
+            int[] arr = new int[len];
+            arr[0] = nums[0];
+            int newLen = 1;
+            for(int i = 1; i < len; i++){   //复制数组, 值相等的元素只保留一个
+                if(nums[i] != nums[i - 1]){
+                    arr[newLen++] = nums[i];
+                }
             }
-            int count = 0;
+            for(int i = 0; i < newLen - 1; i++){
+                int pos = Arrays.binarySearch(arr, i + 1, Math.min(newLen, i + k + 1), arr[i] + k);//使用二分查找,注意一点: 元素值+k的下标<=i+k
+                if(pos > 0) 
+                    count++;
+            }
             
-            for(Iterator<Integer> iter = set.iterator(); iter.hasNext();){ //使用set进行迭代时, (i, j)和(j, i)会重复计算, 所以要除2
-                Integer o = iter.next();
-                if(set.contains(o - k))
-                    count++;
-                if(set.contains(o + k))
-                    count++;
-                //set.remove(o);  //迭代时同时修改会抛出ConcurrentModificationException异常
-            }
-            return count / 2;
         }
+        return count;
     }
 }
-//73%
+//94%
