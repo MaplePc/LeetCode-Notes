@@ -16,44 +16,24 @@ class Solution {
         int len = nums.length;
         if(len < 2)
             return 0;
-        int i = 1;
-        for(; i < len; i++){
-            if(nums[i] < nums[i - 1]) //从左到右遍历
-                break;
-        }
-        if(i == len)
-            return 0;
-        int startI = i;
-        int min = nums[i];        
-        for(i++; i < len; i++){ //寻找最小值
-            if(nums[i] < min)
+        int min = Integer.MAX_VALUE; //倒序相邻的两个元素的较小值的最小值
+        int max = nums[0];           //最大值
+        int endI = -1;               //排序的终点坐标
+        for(int i = 1; i < len; i++){
+            if(nums[i] >= max)
+                max = nums[i];
+            else                     //没有被赋值, 说明在此之前的max最起码应该放在i
+                endI = i;
+            if(nums[i] < nums[i - 1] && nums[i] < min) //倒序相邻的两个元素的较小值的最小值
                 min = nums[i];
         }
-        startI = Arrays.binarySearch(nums, 0, startI, min); //找到最小值的插入位置
-        if(startI < 0){
-            startI = -(startI + 1);
-        }
-        else
-            while(startI < len && nums[startI] == min)
-                startI++;
-        
-        int j = len - 2;
-        for(; j > -1; j--)
-            if(nums[j] > nums[j + 1])   //从右到左遍历
-                break;
-        int end = j;
-        int max = nums[j];
-        for(j--; j > -1; j--)   //寻找最大值
-            if(nums[j] > max)
-                max = nums[j];
-        end = Arrays.binarySearch(nums, end + 1, len, max); //找到最大值的插入位置
-        if(end < 0){
-            end = -(end + 1) - 1;
-        }
-        else
-            while(end > -1 && nums[end] == max)
-                end--;
-        return end - startI + 1;
+        if(endI == -1)  //数组升序
+            return 0;
+        int startI = 0;
+        for(; startI < len - 1 && min >= nums[startI]; startI++) //寻找倒序相邻的两个元素的较小值的最小值的正确位置
+            ;
+        return endI - startI + 1;
     }
 }
-//70%-80%
+//90+%不使用二分查找
+//时间复杂度:O(n), 主要过程只遍历一次数组
