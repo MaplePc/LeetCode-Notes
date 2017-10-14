@@ -15,35 +15,21 @@ Input: [4,2,1]
 Output: False
 Explanation: You can't get a non-decreasing array by modify at most one element.
 Note: The n belongs to [1, 10,000].
-
-
 ======================================================
 class Solution {
     public boolean checkPossibility(int[] nums) {
         int len = nums.length;
         if(len < 3)
             return true;
-        int i = 1;
-        for(; i < len; i++){
-            if(nums[i] < nums[i - 1]) //找到第一个降序的元素, 然后试图改变一个元素的值使得数组升序排列
-                break;
+        int count = 0;
+        for(int i = 1; i < len && count < 2; i++){
+            if(nums[i] < nums[i - 1]){  //当发现降序的元素时
+                count++;
+                if(i - 2 > -1 && nums[i - 2] > nums[i]) //如果前面还有元素, 而且该元素的值比降序的元素大时, 只能增大降序的元素的值
+                    nums[i] = nums[i - 1];                
+            }
         }
-        if(i >= len - 1) //完全升序或只有最后一个元素降序
-            return true;
-        if(i == 1){
-            if(nums[2] < nums[1])
-                return false;
-        }
-        else if(nums[i + 1] < nums[i]) //(这里其实不应该把i+1牵扯进来,留给循环进行判断就好了)
-            return false;
-        else if(nums[i + 1] < nums[i - 1] && nums[i - 2] > nums[i]) //画图找关系(这里其实不应该把i+1牵扯进来,留给循环进行判断就好了)
-            return false;
-        
-        //剩下序列的要求不降序
-        for(i += 2; i < len; i++)
-            if(nums[i] < nums[i - 1])
-                return false;
-        return true;
+        return count < 2;
     }
 }
 //40%-80%
