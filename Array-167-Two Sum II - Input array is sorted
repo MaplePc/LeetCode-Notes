@@ -8,19 +8,21 @@ Input: numbers={2, 7, 11, 15}, target=9
 Output: index1=1, index2=2
 =================================================
 class Solution {
-	public int[] twoSum(int[] numbers, int target) {
-		HashMap<Integer, Integer> map = new HashMap<>(numbers.length);
-		int i = numbers.length - 1;
-		// 因为有可能有负数, 所以不能根据target的值来缩小搜索的范围
-		for (; i > -1; i--) {
-			int anotherKey = target - numbers[i];
-			Integer anotherValue = map.get(anotherKey);
-			if (anotherValue != null) {
-				return new int[] { i + 1, anotherValue + 1 };
-			}
-			map.put(numbers[i], i);
-		}
-		return null;
-	}
+    public int[] twoSum(int[] numbers, int target) {
+        int l = 0;
+        int r = numbers.length - 1;
+        while(true){
+            while(l < r && numbers[l] + numbers[r] > target){
+                r--;
+            }
+            while(l < r && numbers[l] + numbers[r] < target){
+                l++;
+            }
+            if(numbers[l] + numbers[r] == target){
+                break;
+            }
+        }
+        return new int[]{l + 1, r + 1};
+    }
 }
-//5ms~6ms
+//1ms~2ms
