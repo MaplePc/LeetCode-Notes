@@ -14,25 +14,23 @@ class Solution {
         int j = len - 1;
         int maxArea = 0;
         while(i < j){
-            int distance = j - i;
-            int area = 0;
-            if(height[i] > height[j]){
-                area = height[j] * distance;
-                j--;
-            }
-            else if(height[i] == height[j]){
-                area = height[i] * distance;
-                i++;
-                j--;
-            }
-            else{
-                area = height[i] * distance;
-                i++;
-            }
+            int left = height[i];
+            int right = height[j];
+            int area = Math.min(left, right) * (j - i);
             if(area > maxArea)
                 maxArea = area;
+            if(left < right){
+                i++;
+                while(i < j && height[i] <= left)
+                    i++;
+            }
+            else{
+                j--;
+                while(i < j && height[j] <= right)
+                    j--;
+            }
         }
         return maxArea;
     }
 }
-//52%
+//80%-90%
