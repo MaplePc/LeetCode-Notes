@@ -7,24 +7,49 @@ For Example:
  对题目的理解: 木桶能装多少水是由最短板决定的, 当非最长的木板(当有多个最长的木板的时候不影响)找到相距最远的第一个比它长的木板的时候, 就可以从考虑范围里面剔除了
  关键点: 因为数组的对称, 木板可以从左右两个方向被剔除
  ==============================================================
- class Solution {
+class Solution {
     public int maxArea(int[] height) {
         int len = height.length;
         int maxArea = 0;
+        Elem[] elemArr = new Elem[len];
         for(int i = 0; i < len; i++){
-            int area = 0;
-            int maxHeight = -1;
-            for(int j = len - 1; j > i; j--){
-                if(height[j] > maxHeight){
-                    maxHeight = height[j];
-                    area = Math.max(Math.min(height[i], height[j]) * (j - i), area);
-                }
-                if(height[j] >= height[i])
-                    break;
-            }
-            maxArea = Math.max(area, maxArea);
+            elemArr[i] = new Elem(height[i], i);
+        }
+        Arrays.sort(elemArr, elemArr[0].new ElemComparator());
+        int maxI = elemArr[0].index;
+        int minI = maxI;
+        for(int i = 1; i < len; i++){
+            int distance = Math.max(Math.abs(elemArr[i].index - maxI), Math.abs(elemArr[i].index - minI)); //求出当前元素与此前元素的最大,最小下标的差值的绝对值的较大值
+            maxArea = Math.max(elemArr[i].value * distance, maxArea);
+            
+            if(elemArr[i].index > maxI) //更新最大,最小下标
+                maxI = elemArr[i].index;
+            else if(elemArr[i].index < minI)
+                minI = elemArr[i].index;
         }
         return maxArea;
     }
 }
-//超时
+
+class Elem {
+    int value;
+    int index;
+    public Elem(int v, int i){
+        value = v;
+        index = i;
+    }
+    class ElemComparator implements Comparator{ //按元素值降序排列
+        @Override
+        public int compare(Object o1, Object o2){
+            Elem e1 = (Elem)o1;
+            Elem e2 = (Elem)o2;
+            if(e1.value < e2.value)
+                return 1;
+            else if(e1.value == e2.value)
+                return 0;
+            else
+                return -1;
+        }
+    }
+}
+//0.17% GG
