@@ -1,0 +1,30 @@
+Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+
+Note: You may not slant the container and n is at least 2.
+For Example:
+ 1, 8, 6, 2, 5, 4, 8, 3, 7
+ should return 7 * 7 = 49
+ 对题目的理解: 木桶能装多少水是由最短板决定的, 当非最长的木板(当有多个最长的木板的时候不影响)找到相距最远的第一个比它长的木板的时候, 就可以从考虑范围里面剔除了
+ 关键点: 因为数组的对称, 木板可以从左右两个方向被剔除
+ ==============================================================
+ class Solution {
+    public int maxArea(int[] height) {
+        int len = height.length;
+        int maxArea = 0;
+        for(int i = 0; i < len; i++){
+            int area = 0;
+            int maxHeight = -1;
+            for(int j = len - 1; j > i; j--){
+                if(height[j] > maxHeight){
+                    maxHeight = height[j];
+                    area = Math.max(Math.min(height[i], height[j]) * (j - i), area);
+                }
+                if(height[j] >= height[i])
+                    break;
+            }
+            maxArea = Math.max(area, maxArea);
+        }
+        return maxArea;
+    }
+}
+//超时
