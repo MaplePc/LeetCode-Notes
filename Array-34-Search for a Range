@@ -13,38 +13,34 @@ class Solution {
         int[] res = new int[]{-1, -1};
         if(nums.length == 0)
             return res;
-        int start = searchStart(nums, target);
-        int end = searchEnd(nums, target) - 1;
-        if(start > end)
+        
+        int start;
+        int l = 0;
+        int r = nums.length;//二分查找插入位置, r = len;
+        int mid = 0;
+        while(l < r){
+            mid = l + (r - l) / 2;
+            if(target > nums[mid]) //二分查找第一个插入位置
+                l = mid + 1;
+            else
+                r = mid;
+        }
+        if(l == nums.length || nums[l] != target)
             return res;
-        else
-            return new int[]{start, end};
-    }
-    public int searchStart(int[] nums, int target){//第一个插入位置
-        int l = 0;
-        int r = nums.length;//二分查找插入位置, r = len;
-        int mid = 0;
+        start = l;          
+        
+        int end;
+        l++;                        //这一趟从第一个插入位置后面开始查找, 缩小搜索范围
+        r = nums.length;
         while(l < r){
             mid = l + (r - l) / 2;
-            if(target > nums[mid])
-                l = mid + 1;
-            else
-                r = mid;
-        }
-        return l;
-    }
-    public int searchEnd(int[] nums, int target){//最后一个插入位置, 减一就是最后一个target的坐标
-        int l = 0;
-        int r = nums.length;//二分查找插入位置, r = len;
-        int mid = 0;
-        while(l < r){
-            mid = l + (r - l) / 2;
-            if(target < nums[mid])
+            if(target < nums[mid]) //二分查找最后一个插入位置
                 r = mid;
             else
                 l = mid + 1;
         }
-        return l;
-    }    
+        end = l - 1;        
+        return new int[]{start, end};
+    }
 }
-//29%
+//68%
