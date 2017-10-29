@@ -1,0 +1,105 @@
+Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+
+For example,
+Given the following matrix:
+
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+You should return [1,2,3,6,9,8,7,4,5].
+==========================================
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int m = matrix.length;
+        if(m == 0){
+            return new ArrayList<Integer>();
+        }
+        int n = matrix[0].length;
+        List<Integer> res = new ArrayList<>(m * n);
+        
+        int rows = m; //每一圈最大行号
+        int cols = n; //每一圈最大列号
+        int i = 0; //行下标
+        int j = 0; //列下标
+        
+        int spiralTotal = Math.min(m / 2, n / 2); //一共有多少圈(行数和列数都大于1)
+        int spiralNow = 0; //圈的左上角坐标
+        
+        while(spiralNow < spiralTotal){
+            while(j < cols){ //往右到圈尽头
+                res.add(matrix[i][j++]);
+            }
+
+            j--;
+            i++;           
+            while(i < rows){ //往下到圈尽头
+                res.add(matrix[i++][j]);
+            }
+            
+            i--;
+            j--;
+            while(j >= spiralNow){ //往左到圈尽头(包括spiralNow)
+                res.add(matrix[i][j--]);
+            }
+            
+            j++;
+            i--;
+            while(i > spiralNow){ //往上到圈尽头(不与该圈的起始坐标重叠)
+                res.add(matrix[i--][j]);
+            }
+            
+            rows--;
+            cols--;
+            
+            spiralNow++;
+            
+            //进入内圈
+            i = spiralNow; 
+            j = spiralNow; 
+        }
+        
+        // //最后到底剩一行还是剩一列
+        // if(m > n){ //剩一行
+        //     while(i < rows){
+        //         res.add(matrix[i++][j]);
+        //     }
+        // }
+        // else if(m < n){ //剩一列
+        //     while(j < cols){
+        //         res.add(matrix[i][j++]);
+        //     }            
+        // }
+        // else if(m % 2 != 0){
+        //     res.add(matrix[i][j]);
+        // }
+        
+        // //最后到底剩一行还是剩一列
+        // if(spiralTotal > 0 && m % 2 == 1 || spiralTotal == 0 && m == 1){ //剩一行或只有一行
+        //     while(j < cols){
+        //         res.add(matrix[i][j++]);
+        //     }            
+        // }
+        // else if(spiralTotal > 0 && n % 2 == 1 || spiralTotal == 0 && n == 1){ //剩一列或只有一列
+        //     while(i < rows){
+        //         res.add(matrix[i++][j]);
+        //     }
+        // }
+        
+        
+        //最后到底剩一行还是剩一列
+        if(m - spiralTotal * 2 == 1){ //剩一行或只有一行
+            while(j < cols){
+                res.add(matrix[i][j++]);
+            }            
+        }
+        else if(n - spiralTotal * 2 == 1){ //剩一列或只有一列
+            while(i < rows){
+                res.add(matrix[i++][j]);
+            }
+        }
+        
+        return res;
+    }
+}
