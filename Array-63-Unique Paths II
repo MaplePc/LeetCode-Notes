@@ -1,0 +1,57 @@
+Follow up for "Unique Paths":
+
+Now consider if some obstacles are added to the grids. How many unique paths would there be?
+
+An obstacle and empty space is marked as 1 and 0 respectively in the grid.
+
+For example,
+There is one obstacle in the middle of a 3x3 grid as illustrated below.
+
+[
+  [0,0,0],
+  [0,1,0],
+  [0,0,0]
+]
+The total number of unique paths is 2.
+
+Note: m and n will be at most 100.
+============================================
+class Solution {
+    public int uniquePathsWithObstacles(int[][] o) { //可以改数组名
+        int row = o.length;
+        int col = o[0].length;
+        
+        if(o[row - 1][col - 1] == 1) //终点是障碍物, 无路可走
+            return 0;
+        //下面直接在原数组上进行操作, 用负数和0的绝对值来代表路径数
+        for(int j = col - 1; j > -1; j--){ //初始化最后一行
+            if(o[row - 1][j] == 0)
+                o[row - 1][j] = -1;
+            else{
+                for(int k = j; k > -1; k--){
+                    o[row - 1][k] = 0; //将最后一行的障碍物及其左边所有元素都赋值为0                    
+                }
+                break;
+            }
+        }
+        
+        for(int i = row - 2; i > -1; i--){
+            //初始化行末元素
+            if(o[i][col - 1] == 0 && o[i + 1][col - 1] == -1) //行末元素可通行且下一行的行末元素可通行
+                o[i][col - 1] = -1; 
+            else
+                o[i][col - 1] = 0; //是障碍物或无路可走的行末元素, 赋值为0
+            
+            //更新一行的路径数
+            for(int j = col - 2; j > -1; j--){
+                if(o[i][j] == 0)
+                    o[i][j] = o[i + 1][j] + o[i][j + 1];
+                else
+                    o[i][j] = 0; //将障碍物赋值为0
+            }
+        }
+        
+        return -o[0][0]; //取相反数
+    }
+}
+//10%(第一个柱形)
