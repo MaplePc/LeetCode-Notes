@@ -38,11 +38,22 @@ class Solution {
         if(top == row)
             return false;
         
-        int pos = Arrays.binarySearch(m[top], tar); //再从该行里面二分查找
-        if(pos > -1)
+        int left = 0;
+        int right = col;
+        mid = 0;
+        while(left < right){ //确定tar在该行的哪一列(手动实现)
+            mid = left + (right - left) / 2;
+            if(tar > m[top][mid])
+                left = mid + 1;
+            else if(tar < m[top][mid])
+                right = mid;
+            else
+                return true;
+        }
+        if(m[top][left] == tar)
             return true;
-        else
-            return false;
+        return false;
+        
     }
 }
-//16%
+//36%
