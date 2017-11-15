@@ -4,46 +4,33 @@ For example,
 Given [1,3],[2,6],[8,10],[15,18],
 return [1,6],[8,10],[15,18].
 ===============================================
-import java.util.Comparator;
-
 class Solution {
-	public List<Interval> merge(List<Interval> intervals) {
-		if(intervals == null || intervals.size() < 2){
-			return intervals;
-		}
+    public List<Interval> merge(List<Interval> intervals) {
+        int len = intervals.size();
+        if(len == 0)
+            return intervals;
+        int[] start = new int[len];
+        int[] end = new int[len];
+        int j = 0;
+        for(Interval v : intervals){
+            start[j] = v.start;
+            end[j++] = v.end;
+        }
         
-        int size = intervals.size();
-		//System.out.println(intervals.getClass());//class java.util.ArrayList
-	intervals.sort(new StartComparator()); //对List按start进行排序
+        Arrays.sort(start);
+        Arrays.sort(end);
         
-        ArrayList<Interval> list = new ArrayList<>(size);
-        
-		Interval left = intervals.get(0);
-        list.add(left);
-		for(int i = 1; i < size; i++){
-			Interval current = intervals.get(i);
-			if(left.end >= current.start){ //合并: 需要修改已经在list中的left的end属性
-				if(left.end < current.end){
-					left.end = current.end;
-				}
-			}
-			else{ //不合并
-                list.add(current);
-                
-				left = current;
-			}
-		}
-		return list;
+        List<Interval> res = new LinkedList<>();
+        j = 0; //当前区间的start数组中的下标
+        for(int i = 1; i < len; i++){
+            if(start[i] > end[i - 1]){ //当一个区间的start大于上一个区间的end,说明一个新的区间开始了
+                res.add(new Interval(start[j], end[i - 1])); //当前区间合并结束
+                j = i; //新区间的start数组中的下标
+            }
+        }        
+        res.add(new Interval(start[j], end[len - 1])); //最后一个区间
 
-	}
-
-	public static class StartComparator implements Comparator {
-		@Override
-		public int compare(Object o1, Object o2) {
-			Interval i1 = (Interval) o1;
-			Interval i2 = (Interval) o2;
-			return i1.start - i2.start;
-		}
-	}
+        return res;
+    }
 }
-//87%; 
+//97%
