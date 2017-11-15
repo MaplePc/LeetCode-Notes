@@ -11,34 +11,33 @@ class Solution {
 		if(intervals == null || intervals.size() < 2){
 			return intervals;
 		}
-		int size = intervals.size();
-
-		//System.out.println(intervals.getClass());//参数intervals是ArrayList类型, 所以remove操作会比较费时间
         
-		intervals.sort(new StartComparator()); //对List进行排序
-		
-    int count = 1;
-		Interval left = intervals.get(0); //待合并的区间
-		for(int i = 1; count < size && i < size;){
+        int size = intervals.size();
+		//System.out.println(intervals.getClass());//class java.util.ArrayList
+	intervals.sort(new StartComparator()); //对List按start进行排序
+        
+        ArrayList<Interval> list = new ArrayList<>(size);
+        
+		Interval left = intervals.get(0);
+        list.add(left);
+		for(int i = 1; i < size; i++){
 			Interval current = intervals.get(i);
-			if(left.end >= current.start){ //需要合并
+			if(left.end >= current.start){ //合并: 需要修改已经在list中的left的end属性
 				if(left.end < current.end){
 					left.end = current.end;
 				}
-				intervals.remove(i); //合并(删除多余的)区间
 			}
-			else{
+			else{ //不合并
+                list.add(current);
+                
 				left = current;
-				i++;
 			}
-            
-      count++;
 		}
-		return intervals;
+		return list;
 
 	}
 
-	public static class StartComparator implements Comparator { //对Interval按start进行排序
+	public static class StartComparator implements Comparator {
 		@Override
 		public int compare(Object o1, Object o2) {
 			Interval i1 = (Interval) o1;
@@ -47,4 +46,4 @@ class Solution {
 		}
 	}
 }
-//42%
+//87%; 
