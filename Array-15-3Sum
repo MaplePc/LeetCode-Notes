@@ -11,85 +11,96 @@ A solution set is:
 ]
 =====================================
 class Solution {
-    List<List<Integer>> res = new ArrayList<>();
-    int min;
-    int max;
-    int[] hash;
+	List<List<Integer>> res = new ArrayList<>();
+
 	public List<List<Integer>> threeSum(int[] nums) {
 		int len = nums.length;
 		if (len < 3)
 			return res;
-		TreeSet<Integer> positiveSet = new TreeSet<>(); //存放所有正数的树集
-		TreeSet<Integer> negetiveSet = new TreeSet<>(); //存放所有负数的树集
-		int zeroCount = 0; //0的个数
 
-		max = nums[0];
-		min = nums[1];
-		for (int v : nums) {
-			if (v == 0)
-				zeroCount++;
-			if (v > max)
-				max = v;
-			else if (v < min)
-				min = v;
+		Arrays.sort(nums); //sort the array first
+
+		int zeroCount; //the appearing times of 0
+		int lastNeg = Arrays.binarySearch(nums, 0); //search the position of 0; it also means the position of the last negative number in array
+		int firstPos = lastNeg; //the position of the first positive number in array
+		if (lastNeg < 0) { //0 not found
+			zeroCount = 0;
+			lastNeg = -(lastNeg + 1) - 1;//see the Java api
+			firstPos = lastNeg + 1;
+		} else { //found
+			while (lastNeg > -1 && nums[lastNeg] == 0) //skip all 0
+				lastNeg--;
+			while (firstPos < len && nums[firstPos] == 0)
+				firstPos++;
+			zeroCount = firstPos - lastNeg - 1;
 		}
-		max = Math.max(Math.abs(max), Math.abs(min));
+
+		int min;
+		int max;
+		int[] hash;
+		min = nums[0];
+		max = nums[len - 1];
+		max = Math.max(Math.abs(max), Math.abs(min)); //to allocate enough space to avoid check in if statement
 		min = -max;
 		hash = new int[max - min + 1];
-		for (int v : nums) { //构建hash数组, 并将正负数分别放到positiveSet和negetiveSet中
+		for (int v : nums) { //hash and count appearing times of every num
 			hash[v - min]++;
-			if (v > 0)
-				positiveSet.add(v);
-			else if (v < 0)
-				negetiveSet.add(v);
 		}
 
-		if (zeroCount >= 3) { // 至少包含了3个0
+		if (zeroCount >= 3) { // (0 appears 3 times at least)
 			addTriplets(0, 0, 0);
 		}
-		if (zeroCount > 0) { // 包含了0
-			for (Iterator<Integer> iter = positiveSet.iterator(); iter.hasNext();) { //迭代正数集, 看是否能找到绝对值相等的负数
-				int v = iter.next();
-				if (hash[-v - min] > 0) {
-					addTriplets(0, v, -v);
-				}
-				System.out.println(v);
+		if (zeroCount > 0) { // (0 appears 1 times at least)
+			for (int i = firstPos; i < len; i++) { //traverse all the positive numbers to see whether there is a negative number whose absolute value equals to the positive number 
+				if (i > firstPos && nums[i] == nums[i - 1]) //skip the same elements
+					continue;
+				if (hash[-nums[i] - min] > 0)
+					addTriplets(0, nums[i], -nums[i]);
 			}
 		}
 
-		// 一个正数两个负数
-		for (Iterator<Integer> iter = positiveSet.iterator(); iter.hasNext();) { //对正数集迭代, 每次取一个正数v, 看在负数集中能否找到两个相应负数
-			int v = (Integer) iter.next();
-			if (v == 1)
+		// one positive number and two negetive numbers 
+		for (int i = firstPos; i < len; i++) { //traverse all the positive numbers to see whether there are two negative numbers whose sum's absolute value equals to the positive number
+			if (i > firstPos && nums[i] == nums[i - 1]) //skip the same elements
 				continue;
-			SortedSet<Integer> halfSet = negetiveSet.subSet(-(v - 1), -v / 2); //取大小范围为(-v, -v / 2)的负数
-			searchTriplets(halfSet, v);
+			int half; //we can traverse only half of the positive numbers
+			if (nums[i] % 2 != 0)
+				half = -(nums[i] / 2 + 1);
+			else {
+				half = -(nums[i] / 2);
+				if (hash[half - min] > 1)
+					addTriplets(nums[i], half, half);
+			}
+			for (int j = lastNeg; j > -1 && nums[j] > half; j--) {
+				if (j < lastNeg && nums[j] == nums[j + 1])
+					continue;
+				if (hash[(-nums[i] - nums[j]) - min] > 0)
+					addTriplets(nums[i], nums[j], -nums[i] - nums[j]);
+			}
 		}
-		// 一个负数两个正数
-		for (Iterator<Integer> iter = negetiveSet.iterator(); iter.hasNext();) { //对负数集迭代,每次取一个负数v,看在正数集中能否找到两个相应正数
-			int v = iter.next();
-			if (v == -1)
+
+		// one positive number and two negetive numbers 
+		for (int i = lastNeg; i > -1; i--) { //traverse all the negative numbers to see whether there are two positive numbers whose sum's absolute value equals to the negative number
+			if (i < lastNeg && nums[i] == nums[i + 1])//skip the same elements
 				continue;
-			SortedSet<Integer> halfSet = positiveSet.subSet(-(v / 2 - 1), -v); //取大小范围为(-v / 2, -v)的正数
-			searchTriplets(halfSet, v);
+			int half; //we can traverse only half of the positive numbers
+			if (nums[i] % 2 != 0)
+				half = -(nums[i] / 2 - 1);
+			else {
+				half = -(nums[i] / 2);
+				if (hash[half - min] > 1)
+					addTriplets(nums[i], half, half);
+			}
+			for (int j = firstPos; j < len && nums[j] < half; j++) {
+				if (j > firstPos && nums[j] == nums[j - 1])
+					continue;
+				if (hash[(-nums[i] - nums[j]) - min] > 0)
+					addTriplets(nums[i], nums[j], -nums[i] - nums[j]);
+			}
 		}
 		return res;
-
 	}
 
-  //搜索searchSet, 为结果集添加三个和为v的非0整数的组合
-	public void searchTriplets(SortedSet<Integer> searchSet, int v) {
-		for (Iterator<Integer> subIter = searchSet.iterator(); subIter.hasNext();) {
-			int e = subIter.next();
-			if (hash[(-v - e) - min] > 0)
-				addTriplets(v, e, -v - e);
-		}
-		int half = v / 2;
-		if (v == 2 * half && hash[-half - min] > 1) // v能否被整除
-			addTriplets(v, -half, -half);
-	}
-  
-  //为结果集添加组合(a,b,c)(其中a+b+c=0)
 	public void addTriplets(int a, int b, int c) {
 		List<Integer> triplets = new ArrayList<>(3);
 		triplets.add(a);
@@ -98,4 +109,4 @@ class Solution {
 		res.add(triplets);
 	}
 }
-//13%
+//MaplePC, 100%
