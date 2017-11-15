@@ -1,0 +1,84 @@
+Given a 2D board and a word, find if the word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+For example,
+Given board =
+
+[
+  ['A','B','C','E'],
+  ['S','F','C','S'],
+  ['A','D','E','E']
+]
+word = "ABCCED", -> returns true,
+word = "SEE", -> returns true,
+word = "ABCB", -> returns false.
+
+======================================
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        char[] wordCharArr = word.toCharArray();
+        char first = wordCharArr[0];
+        
+        int row = board.length;
+        int col = board[0].length;
+        
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] == first){
+                    board[i][j] = 0;
+                    if(restExist(board, wordCharArr, 1, i, j))
+                        return true;
+                    board[i][j] = first;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    //rest 待匹配的第一个字母在word中的下标
+    //curI,curJ 已匹配的最后一个字母的在board中的下标
+    public boolean restExist(char[][] board, char[] word, int rest, int curI, int curJ){ //暂时令上一个字符为0
+        if(rest == word.length) //全部字母都匹配
+            return true;
+        
+        //检测在board中位于(curI, curJ) 上 方的字母是否匹配
+        if(curI - 1 > -1 && board[curI - 1][curJ] == word[rest]){
+            board[curI - 1][curJ] = 0; //
+            if(restExist(board, word, rest + 1, curI - 1, curJ))
+                return true;
+            board[curI - 1][curJ] = word[rest];
+        }
+        
+        //检测在board中位于(curI, curJ) 下 方的字母是否匹配
+        if(curI + 1 < board.length && board[curI + 1][curJ] == word[rest]){
+            board[curI + 1][curJ] = 0;
+            if(restExist(board, word, rest + 1, curI + 1, curJ))
+                return true;
+            board[curI + 1][curJ] = word[rest];
+        }
+        
+        //检测在board中位于(curI, curJ) 右 方的字母是否匹配
+        if(curJ - 1 > -1 && board[curI][curJ - 1] == word[rest]){
+            board[curI][curJ - 1] = 0;
+            if(restExist(board, word, rest + 1, curI, curJ - 1))
+                return true;
+            board[curI][curJ - 1] = word[rest];
+        }
+        
+        //检测在board中位于(curI, curJ) 左 方的字母是否匹配
+        if(curJ + 1 < board[0].length && board[curI][curJ + 1] == word[rest]){
+            board[curI][curJ + 1] = 0;
+            if(restExist(board, word, rest + 1, curI, curJ + 1))
+                return true;
+            board[curI][curJ + 1] = word[rest];
+        }
+        
+        return false;
+    }
+}
+//75%
+//可使用数组[-1,0],[1,0],[0,-1],[0,1]来简化代码
+//可使用四个递归分支来简化代码
+//当然判断就复杂了
