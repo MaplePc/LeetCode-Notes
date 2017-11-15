@@ -1,0 +1,76 @@
+Given a set of distinct integers, nums, return all possible subsets (the power set).
+
+Note: The solution set must not contain duplicate subsets.
+
+For example,
+If nums = [1,2,3], a solution is:
+
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+========================================================
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        int len = nums.length;
+        List<List<Integer>> res = new LinkedList<>();
+        
+        res.add(new LinkedList<>()); //空集
+        
+        for(int i = 1; i < len; i++){ //获得元素个数为1, 2, 3, ...n - 1的所有组合,
+            res.addAll(combinationSet(nums, 0, i));
+        }
+        
+        List<Integer> allSet = new LinkedList<>();
+        for(int v : nums){
+            allSet.add(v);
+        }
+        res.add(allSet);
+        
+        return res;
+    }
+    
+    //返回nums数组从下标start开始(包括start)的所有元素中取出 含有n(1 <= n < len)个元素的子集的 集合
+    public List<List<Integer>> combinationSet(int[] nums, int start, int n){
+        if(nums.length - start < n)
+            return null;
+        
+        List<List<Integer>> res = new LinkedList<>();
+        int len = nums.length;
+        
+        if(n == 1){ //求只包含一个元素的所有子集, 直接处理
+            for(int i = start; i < len; i++){
+                List<Integer> anInteger = new LinkedList<>();
+                anInteger.add(nums[i]);
+                
+                res.add(anInteger);
+            }
+            return res;    
+        }
+
+        //递归调用本函数(减一法)
+        //求包含n个元素的所有子集的集合,即
+        //nums[start] + (n - 1)个元素的所有子集的集合
+        //nums[start + 1] + (n - 2)个元素的所有子集的集合
+        //nums[start + 2] + (n - 3)个元素的所有子集的集合
+        //...
+        for(int i = start; i < len; i++){
+            List<List<Integer>> comSet = combinationSet(nums, i + 1, n - 1); 
+            if(comSet == null)
+                break;  
+            
+            for(List<Integer> list : comSet){
+                ((LinkedList)list).addFirst(nums[i]); //加上当前值
+            }
+            res.addAll(comSet);
+        }
+        return res;
+    }
+}
+//3%
