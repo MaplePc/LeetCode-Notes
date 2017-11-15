@@ -1,0 +1,50 @@
+Given a collection of intervals, merge all overlapping intervals.
+
+For example,
+Given [1,3],[2,6],[8,10],[15,18],
+return [1,6],[8,10],[15,18].
+===============================================
+import java.util.Comparator;
+
+class Solution {
+	public List<Interval> merge(List<Interval> intervals) {
+		if(intervals == null || intervals.size() < 2){
+			return intervals;
+		}
+		int size = intervals.size();
+
+		//System.out.println(intervals.getClass());//参数intervals是ArrayList类型, 所以remove操作会比较费时间
+        
+		intervals.sort(new StartComparator()); //对List进行排序
+		
+    int count = 1;
+		Interval left = intervals.get(0); //待合并的区间
+		for(int i = 1; count < size && i < size;){
+			Interval current = intervals.get(i);
+			if(left.end >= current.start){ //需要合并
+				if(left.end < current.end){
+					left.end = current.end;
+				}
+				intervals.remove(i); //合并(删除多余的)区间
+			}
+			else{
+				left = current;
+				i++;
+			}
+            
+      count++;
+		}
+		return intervals;
+
+	}
+
+	public static class StartComparator implements Comparator { //对Interval按start进行排序
+		@Override
+		public int compare(Object o1, Object o2) {
+			Interval i1 = (Interval) o1;
+			Interval i2 = (Interval) o2;
+			return i1.start - i2.start;
+		}
+	}
+}
+//42%
