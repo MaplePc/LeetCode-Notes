@@ -11,44 +11,48 @@ You may assume that duplicates do not exist in the tree.
  *     TreeNode right;
  *     TreeNode(int x) { val = x; }
  * }
- */
+class Solution { //改进版
+    private int pre = 0;
+    private int in = 0;
+    
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return helper(preorder, inorder, null); 
+    }
+    
+    public TreeNode helper(int[] preorder, int[] inorder, Integer rootVal){
+        if(pre >= preorder.length || in >= inorder.length || (rootVal != null && rootVal == inorder[in]))
+            return null;
+        TreeNode node = new TreeNode(preorder[pre++]);
+        node.left = helper(preorder, inorder, node.val);
+        in++;
+        
+        node.right = helper(preorder, inorder, rootVal);
+        
+        return node;
+    }
+}
+//98%
+
+//原版(有bug):
 class Solution {
-	public TreeNode buildTree(int[] pre, int[] in) {
-		int len = pre.length;
-		if (len == 0)
-			return null;
-
-		int max = in[0];
-		int min = in[0];
-		for (int v : in) {
-			if (v > max)
-				max = v;
-			if (v < min)
-				min = v;
-		}
-
-		max = Math.max(Math.abs(max), Math.abs(min));
-		min = -max;
-		short[] hash = new short[2 * max + 1];
-		for (int i = 0; i < len; i++) {
-			hash[in[i] - min] = (short) i;
-		}
-
-		return subTree(hash, min, pre, 0, len - 1, in, 0, len - 1);
-	}
-
-	//用pre数组中下标范围是[preL, preR]的元素和对应的in数组中下标范围是[inL, inR]的元素构造一颗(子)二叉树
-	public TreeNode subTree(short[] hash, int min, int[] pre, int preL, int preR, int[] in, int inL, int inR) {
-		if (preL > preR)
-			return null;
-
-		int val = pre[preL]; //取pre中第一个元素, 其值为val
-		TreeNode curNode = new TreeNode(val);
-		int i = hash[val - min];
-		curNode.left = subTree(hash, min, pre, preL + 1, preL + (i - inL), in, inL, i - 1);
-		curNode.right = subTree(hash, min, pre, preL + 1 + (i - inL), preR, in, i + 1, inR);
-		return curNode;
-
-	}
+    
+    private int pre = 0;
+    private int in = 0;
+    
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        //########如果Integer.MIN_VALUE也出现在数组中, 算法就可能错误了#########
+        return helper(preorder, inorder, Integer.MIN_VALUE);
+    }
+    
+    private TreeNode helper(int[] preorder, int[] inorder, int rootVal) {
+        if (pre >= preorder.length || in >= inorder.length || inorder[in] == rootVal) {
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[pre++]);
+        root.left = helper(preorder, inorder, preorder[pre - 1]);
+        in++;
+        root.right = helper(preorder, inorder, rootVal);
+        return root;
+    }
 }
 //98%
