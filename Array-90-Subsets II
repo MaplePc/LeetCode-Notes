@@ -1,0 +1,53 @@
+Given a collection of integers that might contain duplicates, nums, return all possible subsets (the power set).
+
+Note: The solution set must not contain duplicate subsets.
+
+For example,
+If nums = [1,2,2], a solution is:
+
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+============================================
+class Solution {
+	public List<List<Integer>> subsetsWithDup(int[] nums) {
+		int len = nums.length;
+
+		List<List<Integer>> res = new ArrayList<>();
+		res.add(new ArrayList<>()); //添加空子集
+
+		if (len == 0)
+			return res;
+
+		Arrays.sort(nums); //排序
+
+		int lastNumSize = 1; //与当前值不同的前一个值添加到res后res的大小
+
+		for (int i = 0; i < len; i++) {
+			int size = res.size();
+			int j = 0; //当前值与前一个值不同, 需要取出并复制所有子集
+
+            //如果当前值与前一个值相同, 只需取出并复制子集集合尾部共lastNumSize个子集来加上当前值, 然后把这些新子集添加到res中
+			if (i > 0 && nums[i] == nums[i - 1]) 
+				j = size - lastNumSize;
+
+			for (; j < size; j++) {
+				ArrayList<Integer> newSet = new ArrayList<>(res.get(j));
+				newSet.add(nums[i]);
+
+				res.add(newSet);
+			}
+
+			if (i < len - 1 && nums[i + 1] != nums[i]) //如果当前值与后面的值不同, 更新lastNumSize为当前res的size
+				lastNumSize = res.size();
+		}
+
+		return res;
+	}
+}
+//non-recursive, 37%
