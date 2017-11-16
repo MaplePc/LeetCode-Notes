@@ -1,0 +1,41 @@
+Given preorder and inorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+============================================
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+	public TreeNode buildTree(int[] pre, int[] in) {
+		int len = pre.length;
+		if (len == 0)
+			return null;
+		return subTree(pre, 0, len - 1, in, 0, len - 1);
+	}
+
+	//用pre数组中下标范围是[preL, preR]的元素和对应的in数组中下标范围是[inL, inR]的元素构造一颗(子)二叉树
+	public TreeNode subTree(int[] pre, int preL, int preR, int[] in, int inL, int inR) {
+		if (preL > preR)
+			return null;
+
+		int val = pre[preL]; //取pre中第一个元素, 其值为val
+		TreeNode curNode = new TreeNode(val);
+		for (int i = inL; i <= inR; i++) {
+			if (in[i] == val) { //在in数组中找到val, 以此划分
+				curNode.left = subTree(pre, preL + 1, preL + (i - inL), in, inL, i - 1);
+				curNode.right = subTree(pre, preL + 1 + (i - inL), preR, in, i + 1, inR);
+				return curNode;
+			}
+		}
+
+		return null; //impossible
+	}
+}
+//30%-60%
