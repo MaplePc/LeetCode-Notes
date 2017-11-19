@@ -15,32 +15,19 @@ Bonus point if you are able to do this using only O(n) extra space, where n is t
 class Solution {
     public int minimumTotal(List<List<Integer>> tri) {
         int row = tri.size();
-        if(row == 0)
-            return 0;
+        int[] count = new int[row];
         
-        int[] count = new int[tri.get(row - 1).size()];
-        count[0] = tri.get(0).get(0);
-
-        for(int i = 1; i < row; i++){ //从第二行开始
+        List<Integer> lastRow = tri.get(row - 1);
+        for(int j = 0; j < row; j++)
+            count[j] = lastRow.get(j);
+        
+        for(int i = row - 2; i > -1; i--){
             List<Integer> thisRow = tri.get(i);
-            int col = i + 1;
-
-            int last = count[0];
-            count[0] = count[0] + thisRow.get(0);
-            for(int j = 1; j < col - 1; j++){
-                int cur = count[j];
-                count[j] = Math.min(last, count[j]) + thisRow.get(j);
-                last = cur;
+            for(int j = 1; j < thisRow.size() + 1; j++){
+                count[j - 1] = Math.min(count[j - 1], count[j]) + thisRow.get(j - 1);
             }
-            count[col - 1] = last + thisRow.get(col - 1);
         }
         
-        int sum = Integer.MAX_VALUE;
-        for(int v : count)
-            if(v < sum)
-                sum = v;
-        return sum;
+        return count[0];
     }
 }
-//94%
-//计算方法调整了3次...
