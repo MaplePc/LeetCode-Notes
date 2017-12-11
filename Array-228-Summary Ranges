@@ -1,0 +1,40 @@
+Given a sorted integer array without duplicates, return the summary of its ranges.
+
+Example 1:
+Input: [0,1,2,4,5,7]
+Output: ["0->2","4->5","7"]
+Example 2:
+Input: [0,2,3,4,6,8,9]
+Output: ["0","2->4","6","8->9"]
+=================================================
+class Solution {
+	public List<String> summaryRanges(int[] nums) {
+		List<String> res = new LinkedList<>();
+		int len = nums.length;
+		if (len == 0)
+			return res;
+		int start = 0;
+		for (int i = 1; i < len; i++) {
+			if (nums[i] - 1 != nums[i - 1]) {
+				res.add(createSection(nums, i, start));
+
+				//重新开始
+				start = i;
+			}
+		}
+		res.add(createSection(nums, len, start));
+
+		return res;
+	}
+
+	public String createSection(int nums[], int newStart, int start) {
+		String section = null;
+		if (newStart - 1 == start) { //只有一个数
+			section = new String("" + nums[start]);
+		} else { //一个区间
+			section = new String(nums[start] + "->" + nums[newStart - 1]);
+		}
+
+		return section;
+	}
+}
