@@ -1,0 +1,68 @@
+Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
+
+For example, given the array [2,3,1,2,4,3] and s = 7,
+the subarray [4,3] has the minimal length under the problem constraint.
+==========================================
+class Solution {
+    public int minSubArrayLen(int s, int[] nums) {
+        int len = nums.length;
+        
+        int start = 0;
+        int end = 0;
+        int sum = 0;
+        
+        int minLen = len;
+        for(int i = 0; i < len; i++){
+            if(sum < s){ //进食
+                end = i;
+                sum += nums[i];
+            }
+            else if(nums[i] >= nums[start]){ //减肥
+                end = i;
+                sum += nums[i]; //这个更好吃
+                do{
+                    sum -= nums[start++];
+                }while(sum > s && start < i && nums[i] >= nums[start]);
+                
+                if(sum < s){
+                    start--;
+                    sum += nums[start];
+                }
+            }
+            else{ //重新开始
+                if(end - start + 1 < minLen)
+                    minLen = end - start + 1;
+                
+                start = i;
+                end = i;
+                sum = nums[i];
+            }
+        }
+        
+        if(sum > s && sum - nums[end] < s){ //吃完最后一个刚好吃饱, 减肥
+             do{
+                    sum -= nums[start++];
+                }while(sum > s && start < end && nums[end] >= nums[start]);
+                
+                if(sum < s){
+                    start--;
+                    sum += nums[start];
+                }
+        }
+        
+        if(sum >= s && end - start + 1 < minLen)
+            return end - start + 1;
+        if(sum < s && minLen == len)
+            return 0;
+        return minLen;
+    }
+}
+-----------------
+出错情形:
+Input:
+20
+[2,16,14,15]
+Output:
+3
+Expected:
+2
