@@ -11,22 +11,17 @@ class Solution {
     public int[] productExceptSelf(int[] nums) {
         int len = nums.length; //len >= 2
         int[] res = new int[len];
-        multiply(nums, res, 0, 1);
-        return res;
-    }
-    
-    //index 当前元素的下标
-    //front 当前元素之前的元素的积
-    //return 当前元素 * 当前元素之后的元素的积
-    public int multiply(int[] nums, int[] res, int index, int front){
-        if(index == nums.length - 1){
-            res[index] = front;
-            return nums[index];
+        
+        res[0] = 1;
+        for(int i = 1; i < len; i++){ //往res数组中填入该位置之前元素的乘积
+            res[i] = res[i - 1] * nums[i - 1];
         }
         
-        int behind = multiply(nums, res, index + 1, front * nums[index]);
-        res[index] = front * behind;
-        return nums[index] * behind;
+        int behind = 1; //该位置之后的元素的乘积
+        for(int i = len - 1; i > -1; i--){
+            res[i] *= behind;
+            behind *= nums[i];
+        }
+        return res;
     }
 }
-//堆栈溢出
