@@ -7,14 +7,24 @@ Your runtime complexity should be less than O(n2).
 There is only one duplicate number in the array, but it could be repeated more than once.
 =======================================================
 class Solution {
-    public int findDuplicate(int[] nums) {
-        int len = nums.length;
-        HashSet<Integer> set = new HashSet<>(len);
-        for(int v : nums){
-            if(set.add(v) == false)
-                return v;
+    //1.nums数组共有n+1个数, 每个数取值范围[1, n], 该数组的下标范围[0, n]
+    //2.元素可视为下标
+    public int findDuplicate(int[] nums) { 
+        int s = nums[0]; //跑得慢,每次走一步
+        int f = nums[nums[0]]; //跑得快,每次走两步; 进入一个循环点后值不会再改变
+        while (s != f){ //获得进入循环点后的值(该值可能是重复出现的值,也可能是重复出现的值的下标)
+            s = nums[s];
+            f = nums[nums[f]];
         }
-        return 0;
+        
+        
+        int a = 0; 
+        //寻找重复出现的值: 从第0个元素开始寻找, 同时s也不停在循环点的值和下标中循环,
+        //当第一次(为什么是第一次?)两个值相等(为什么不会刚好错开?)的时候就得到重复的值
+        while (a != s){ 
+            a = nums[a];
+            s = nums[s];
+        }
+        return a;
     }
 }
-//58%
