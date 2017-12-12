@@ -10,11 +10,19 @@ class Solution {
     public int findDuplicate(int[] nums) {
         int len = nums.length;
         Arrays.sort(nums); //排序
-        for(int i = 1; i < len; i++){ //遍历查找
-            if(nums[i] == nums[i - 1])
-                return nums[i];
+        int left = 0;
+        int right = len - 1;
+        int mid = 0;
+        while(left < right){ //二分查找
+            mid = (left + right) / 2;
+            if(nums[mid] == mid + 1)
+                left = mid + 1;
+            else if(nums[mid] < mid + 1)
+                right = mid;
+            else
+                left = mid;
         }
-        return 0; //error
+        return left;
     }
 }
 //20%
