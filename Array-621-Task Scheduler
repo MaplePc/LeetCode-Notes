@@ -1,0 +1,56 @@
+Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks.Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
+
+However, there is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
+
+You need to return the least number of intervals the CPU will take to finish all the given tasks.
+
+Example 1:
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+Note:
+The number of tasks is in the range [1, 10000].
+The integer n is in the range [0, 100].
+==========================================
+public class Solution{
+	public int leastInterval(char[] tasks, int n) {
+		int[] taskCount = new int[26];
+		for (char t : tasks) {
+			taskCount[t - 'A']++;
+		}
+
+        Arrays.sort(taskCount); //从小到大排序
+		int start = 0; //start是任务数最小的任务的下标
+		for(int i = 0; i < 26; i++){
+			if(taskCount[i] != 0){
+				start = i;
+				break;
+			}
+		}
+		
+		int res = 0;
+		int redundant = 0;
+		//处理第一个任务
+		if (26 - start > n) { //任务种类数大于n, 每一个周期内都可以满额运行
+			res += taskCount[start] * (26 - start);
+		} else { //任务数不足, 需要冷却
+			res += taskCount[start] * (n + 1);
+			redundant = n + 1 - (26 - start); //末尾的冷却时间
+		}
+		
+		//处理后面其他任务
+		for (int i = start + 1; i < 26; i++) {
+			if(taskCount[i] == taskCount[i - 1])
+				continue;
+			if(26 - i > n){ //任务种类数大于n, 每一个周期内都可以满额运行
+				res += (taskCount[i] - taskCount[i - 1]) * (26 - i); //26 - i是任务种类数
+			}
+			else{ //任务数不足, 需要冷却
+				res += (taskCount[i] - taskCount[i - 1]) * (n + 1);
+				redundant = n + 1 - (26 - i); //末尾的冷却时间
+			}
+		}
+		return res - redundant;
+	}
+}
+//完全理解错题意
