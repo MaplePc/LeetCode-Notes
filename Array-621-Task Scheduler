@@ -13,7 +13,7 @@ The number of tasks is in the range [1, 10000].
 The integer n is in the range [0, 100].
 ==========================================
 public class Solution{
-	public int leastInterval(char[] tasks, int n) { 
+	public int leastInterval(char[] tasks, int n) { //不要把n作为任务的周期
 		int[] taskCount = new int[26];
 		for (char t : tasks) {
 			taskCount[t - 'A']++;
@@ -21,34 +21,19 @@ public class Solution{
 
         Arrays.sort(taskCount); //从小到大排序
 		
-        PriorityQueue<Integer> queue = new PriorityQueue<>(26, Collections.reverseOrder()); //优先输出最大值的队列
-        for(int v : taskCount){
-        	if(v != 0)
-        		queue.add(v);
+        int max_value = taskCount[25] - 1;
+        int idle = max_value * n; //假设除了任务数量最多的任务外没有其他任务, 所以每一个周期都需要冷却n个片段
+        for(int i = 24; i > -1 && taskCount[i] > 0; i--){
+            idle -= Math.min(taskCount[i], max_value);
         }
-        
-        int time = 0;
-        while(!queue.isEmpty()){ //以n为周期去安排任务
-        	LinkedList<Integer> temp = new LinkedList<>();
-        	int i = 0;
-        	while(i <= n){
-        		if(!queue.isEmpty()){
-        			if(queue.peek() > 1){ //要求放进队列里的元素都是正数
-            			temp.add(queue.poll() - 1);
-            		}
-            		else{
-            			queue.poll();
-            		}
-        		}
-        		i++;
-        		time++; //当队列为空时,需要插入冷却时间
-        		
-        		if(temp.isEmpty() && queue.isEmpty())
-        			break;
-        	}
-        	queue.addAll(temp);
-        }
-		return time;
+		return idle > 0 ? idle + tasks.length : tasks.length;
 	}
 }
-//34%
+//例子: 2,2,3,4,6 res = 17
+//周期1: A B C D E
+//周期2: A B C D E
+//周期3: A B C
+//周期4: A B 
+//周期5: A 
+//周期6: A
+//    idle-4-3-2-2 = -1
