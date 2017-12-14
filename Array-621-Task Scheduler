@@ -13,7 +13,7 @@ The number of tasks is in the range [1, 10000].
 The integer n is in the range [0, 100].
 ==========================================
 public class Solution{
-	public int leastInterval(char[] tasks, int n) {
+	public int leastInterval(char[] tasks, int n) { 
 		int[] taskCount = new int[26];
 		for (char t : tasks) {
 			taskCount[t - 'A']++;
@@ -21,85 +21,34 @@ public class Solution{
 
         Arrays.sort(taskCount); //从小到大排序
 		
-        int len = 0; //任务种数
-        LinkedList<Integer> list = new LinkedList<>();
-        int i = 0;
-        while(i < 26 && taskCount[i] == 0)
-            i++;
-        len = 26 - i;
-        
-		while(i < 26)
-            list.add(taskCount[i++]);
-		
-		int res = 0;
-        int list_0 = 0;
-        int list_len_n = 0;
-		while(len > n){ //计算不需要冷却的时间(res在这里代表周期数)
-            list_0 = list.get(0);
-            list_len_n = list.get(len - n);
-                       
-            if(list_0 < list_len_n){
-                res += list_0;
-                list.set(len - n, list_len_n - list_0);
-                
-                list.removeFirst();
-                len--;
-            }
-            else if(list_0 > list_len_n){
-                res += list_len_n;
-                list.set(0, list_0 - list_len_n);
-                
-                for(int j = n - 1; j > 0; j--){
-                    if(list.get(len - (n - 1)) == res){
-                        list.remove(len - (n - 1));
-                        len--;
-                    }    
-                    else{
-                        list.set(len - n, list.get(len - n) - res); //更新值
-                        break;
-                    }
-                }
-                
-                
-                list.remove(len - n);
-                len--;
-                
-                
-            }    
-            else{ //两者相等
-                res += list_0;
-            
-                for(int j = n - 1; j > 0; j--){
-                    if(list.get(len - (n - 1)) == res){
-                        list.remove(len - (n - 1));
-                        len--;
-                    }    
-                    else{
-                        list.set(len - n, list.get(len - n) - res); //更新值
-                        break;
-                    }
-                }
-                
-                list.removeFirst();
-                list.remove(len - n);
-                len -= 2;
-                
-            }
+        PriorityQueue<Integer> queue = new PriorityQueue<>(26, Collections.reverseOrder()); //优先输出最大值的队列
+        for(int v : taskCount){
+        	if(v != 0)
+        		queue.add(v);
         }
-        int lastTaskCount = list.get(len - 1) - res; //?????
-        res *= n + 1; //周期数*周期等于时间
         
-        
-        //计算需要冷却的时间
-        res += lastTaskCount * (n + 1);
-        
-        //减去最后一个周期后面冷却的时间
-        i = len - 2;
-        while(i > -1 && list.get(i) == lastTaskCount)
-            i--;
-        res -= (n + 1) - (len - i - 1);
-        
-		return res;
+        int time = 0;
+        while(!queue.isEmpty()){ //以n为周期去安排任务
+        	LinkedList<Integer> temp = new LinkedList<>();
+        	int i = 0;
+        	while(i <= n){
+        		if(!queue.isEmpty()){
+        			if(queue.peek() > 1){ //要求放进队列里的元素都是正数
+            			temp.add(queue.poll() - 1);
+            		}
+            		else{
+            			queue.poll();
+            		}
+        		}
+        		i++;
+        		time++; //当队列为空时,需要插入冷却时间
+        		
+        		if(temp.isEmpty() && queue.isEmpty())
+        			break;
+        	}
+        	queue.addAll(temp);
+        }
+		return time;
 	}
 }
-//用list来做,太监
+//34%
