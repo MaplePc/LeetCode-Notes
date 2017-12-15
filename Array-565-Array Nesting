@@ -21,18 +21,17 @@ class Solution {
         boolean[] count = new boolean[len];
         int res = 1;
         int num = 1; //每一个序列的长度
-        
+
         //下标集合: set={0, 1, 2, 3..., n-1}
         //每一个序列: S[i] = {A[i], A[A[i]], A[A[A[i]]], ..., A[..A[i]] = i},都是对下标集合set的划分
         //每一个数组元素只能出现在一个序列中(序列中元素的顺序是可以依次循环的)
-        for(int v : nums){ //这里v换成下标更好,详见No.2
-            if(count[nums[v]] == false){ //nums[v]还没有出现在某一条队列中
-                count[nums[v]] = true;
-                
+        for(int i = 0; i < len; i++){ //i为下标
+            if(count[i] == false){
+                count[i] = true;
                 num = 1;
-                for(int i = v; nums[i] != v; i = nums[i]){ //进行搜索
-                    count[nums[i]] = true; //对搜索过的结点置标志
-                    num++; //序列长度自增                   
+                for(int j = i; nums[j] != i; j = nums[j]){
+                    count[j] = true;
+                    num++;
                 }
                 if(num > res)
                     res = num;
@@ -41,4 +40,4 @@ class Solution {
         return res;
     }
 }
-//40%
+//83%
