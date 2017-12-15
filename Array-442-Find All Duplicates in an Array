@@ -1,0 +1,53 @@
+Given an array of integers, 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
+
+Find all the elements that appear twice in this array.
+
+Could you do it without extra space and in O(n) runtime?
+
+Example:
+Input:
+[4,3,2,7,8,2,3,1]
+
+Output:
+[2,3]
+================================================
+class Solution {
+    public List<Integer> findDuplicates(int[] nums) {
+        int len = nums.length; 
+        for(int i = 0; i < len; i++){
+            if(nums[i] > 0) //当前位置已被标记(已经有在位元素了)
+                sign(nums, nums[i] - 1, i);
+            else if(nums[i] < 0) //当前位置还没被标记
+                sign(nums, -nums[i] - 1, i);
+        }
+        
+        List<Integer> res = new LinkedList<>();
+        for(int i = 0; i < len; i++)
+            if(nums[i] == 0)
+                res.add(i + 1);
+        
+        return res;
+    }
+    
+    /*
+    *标记index位置有元素, arr为外部循环数组的处理位置
+    */
+    public void sign(int[] nums, int index, int arrI){ 
+        if(nums[index] > 0)
+            nums[index] = -nums[index];
+        else if(nums[index] < 0){
+        	if(index > arrI){ //没有标记过
+        		int temp = -nums[index] - 1;
+                nums[index] = 0;
+                sign(nums, temp, arrI);
+        	}
+        	else //避免重复标记
+        		nums[index] = 0;
+        }
+    }
+}
+//47%
+//三种状态: 
+//1.value[1,n] 未处理
+//2.value < 0 当前位置有元素
+//3.value == 0 当前位置有重复元素
