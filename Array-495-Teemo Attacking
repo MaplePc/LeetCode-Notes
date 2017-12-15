@@ -1,0 +1,28 @@
+In LOL world, there is a hero called Teemo and his attacking can make his enemy Ashe be in poisoned condition. Now, given the Teemo's attacking ascending time series towards Ashe and the poisoning time duration per Teemo's attacking, you need to output the total time that Ashe is in poisoned condition.
+
+You may assume that Teemo attacks at the very beginning of a specific time point, and makes Ashe be in poisoned condition immediately.
+
+Example 1:
+Input: [1,4], 2
+Output: 4
+
+Example 2:
+Input: [1,2], 2
+Output: 3
+
+Note:
+You may assume the length of given time series array won't exceed 10000.
+You may assume the numbers in the Teemo's attacking time series and his poisoning time duration per attacking are non-negative integers, which won't exceed 10,000,000.
+=============================
+class Solution {
+    public int findPoisonedDuration(int[] times, int duration) {
+        int len = times.length;
+        if(duration == 0 || len == 0)
+            return 0;
+        
+        int res = duration;
+        for(int i = 1; i < len; i++)
+            res += Math.min(times[i] - times[i - 1], duration);   
+        return res;
+    }
+}
