@@ -13,16 +13,16 @@ Output:
 ================================================
 class Solution {
     public List<Integer> findDuplicates(int[] nums) {
-        int len = nums.length; 
-        List<Integer> res = new LinkedList<>();
-        boolean[] sign = new boolean[len];
-        for(int v : nums){
-            if(!sign[v - 1])
-                sign[v - 1] = true;
-            else
-                res.add(v);
+        int len = nums.length;
+        List<Integer> res = new ArrayList<>();
+        for(int i = 0; i < len; i++){
+            int index = Math.abs(nums[i]) - 1;
+            if(nums[index] < 0) //元素出现两次
+                res.add(index + 1);
+            nums[index] = -nums[index];
         }
         return res;
     }
 }
-//97%
+//94%
+//这种方式只适合出现两次
