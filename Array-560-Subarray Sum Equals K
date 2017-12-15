@@ -10,19 +10,21 @@ The range of numbers in the array is [-1000, 1000] and the range of the integer 
 class Solution {
     public int subarraySum(int[] nums, int k) {
         int len = nums.length;
-        int start = 0;
         int sum = 0;
         int res = 0;
-        for(int i = 0; i < len; i++){
-            sum += nums[i];
-            
-            while(sum > k && start < i){
-                sum -= nums[start++];
+        for(int i = 0; i < len; i++){ //选终点
+            for(int j = 0; j < i ; j++){ //选起点
+                nums[j] += nums[i];
+                if(nums[j] == k)
+                    res++;
             }
-            if(sum == k){
+            if(nums[i] == k)
                 res++;
-            }
         } 
         return res;
     }
 }
+//%8, 时间:O(n2),空间O(1)
+//将数组的一部分看成: 起0, 起1, 起2,...终点i, 终点i+1
+//1.用数组原有的空间, 将数组里面每一个元素定义为以当前下标为起点, 至后面的终点之间的所有元素之和;
+//2.然后从一个终点迭代到下一个终点时,只需要以前的每一个起点加上下一个终点的元素值
