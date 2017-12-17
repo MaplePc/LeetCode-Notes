@@ -5,43 +5,63 @@ remove(val): Removes an item val from the set if present.
 getRandom: Returns a random element from current set of elements. Each element must have the same probability of being returned.
 ===================================
 class RandomizedSet {
-	HashSet<Integer> set;
-    	boolean isModified;
-	Integer[] array;
-	
+    int capacity = 0;
+    int[] array;
     /** Initialize your data structure here. */
     public RandomizedSet() {
-        set = new HashSet<>();
-        array = new Integer[0];
-        isModified = false;
+        array = new int[10]; //初始容量
     }
     
+    protected void extend(int val, int index){
+        if(capacity == array.length){ //需要扩容
+            int[] newSet = new int[capacity * 2];
+            System.arraycopy(array, 0, newSet, 0, index); //使用数组复制
+            newSet[index] = val;
+            System.arraycopy(array, index, newSet, index + 1, capacity - index);
+            
+            array = newSet;
+            capacity++;
+        }
+        else{ //不需要扩容
+            int size = capacity;
+            for(int i = size; i > index; i--){
+                array[i] = array[i - 1];
+            }
+            array[index] = val;
+            capacity++;
+        }
+    }    
+
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     public boolean insert(int val) {
-        boolean result = set.add(val);
-        if(result){
-        	isModified = true;
-        }
-        return result;
+        int index = Arrays.binarySearch(array, 0, capacity, val); //二分查找
+        if(index > -1)
+            return false; //已经存在
+        else
+            extend(val, -index - 1);
+        return true;
     }
     
     /** Removes a value from the set. Returns true if the set contained the specified element. */
     public boolean remove(int val) {
-    	boolean result = set.remove(val);
-        if(result){
-        	isModified = true;
+        int index = Arrays.binarySearch(array, 0, capacity, val); //二分查找
+        if(index > -1){ //存在元素
+            int size = capacity;
+            for(int i = index + 1; i < size; i++){
+                array[i - 1] = array[i];
+            }
+            capacity--;
+            return true;
         }
-    	return result;
+        else //不存在
+            return false;
     }
     
     /** Get a random element from the set. */
     public int getRandom() {
-        int random = (int) (Math.random() * set.size());
-        if(isModified){
-        	array = set.toArray(array); //耗时: 每次修改了集合之后都需要构造一个新数组来返回
-        	isModified = false;
-        }
-        return array[random];
+        int randomNum = (int)(Math.random() * capacity);
+        return array[randomNum];
     }
 }
-<10%
+//14%
+//耗时: 1.数组复制(移动位置), 2.二分查找
