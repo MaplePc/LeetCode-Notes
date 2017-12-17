@@ -6,33 +6,36 @@ getRandom: Returns a random element from current set of elements. Each element m
 ===================================
 class RandomizedSet {
 	HashSet<Integer> set;
+	ArrayList<Integer> list;
 	
     /** Initialize your data structure here. */
     public RandomizedSet() {
         set = new HashSet<>();
+        list = new ArrayList<>();
     }
     
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     public boolean insert(int val) {
-        return set.add(val);
+        boolean result = set.add(val);
+        if(result){
+        	list.add(val);
+        }
+        return result;
     }
     
     /** Removes a value from the set. Returns true if the set contained the specified element. */
     public boolean remove(int val) {
-        return set.remove(val);
+    	boolean result = set.remove(val);
+        if(result){
+        	list.remove((Integer)val); //耗时: 删除元素时需要遍历
+        }
+    	return result;
     }
     
     /** Get a random element from the set. */
-    public int getRandom() { //耗时: 随机选取元素时需要迭代
+    public int getRandom() {
         int random = (int) (Math.random() * set.size());
-        int i = 0;
-        for(Iterator<Integer> iter = set.iterator(); iter.hasNext(); i++){
-        	if(i == random){
-        		return iter.next();
-        	}
-        	iter.next();
-        }
-        return -1; //impossible
+        return list.get(random);
     }
 }
 // <10%
