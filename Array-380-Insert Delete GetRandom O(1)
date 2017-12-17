@@ -6,19 +6,21 @@ getRandom: Returns a random element from current set of elements. Each element m
 ===================================
 class RandomizedSet {
 	HashSet<Integer> set;
-	ArrayList<Integer> list;
+    	boolean isModified;
+	Integer[] array;
 	
     /** Initialize your data structure here. */
     public RandomizedSet() {
         set = new HashSet<>();
-        list = new ArrayList<>();
+        array = new Integer[0];
+        isModified = false;
     }
     
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     public boolean insert(int val) {
         boolean result = set.add(val);
         if(result){
-        	list.add(val);
+        	isModified = true;
         }
         return result;
     }
@@ -27,7 +29,7 @@ class RandomizedSet {
     public boolean remove(int val) {
     	boolean result = set.remove(val);
         if(result){
-        	list.remove((Integer)val); //耗时: 删除元素时需要遍历
+        	isModified = true;
         }
     	return result;
     }
@@ -35,7 +37,11 @@ class RandomizedSet {
     /** Get a random element from the set. */
     public int getRandom() {
         int random = (int) (Math.random() * set.size());
-        return list.get(random);
+        if(isModified){
+        	array = set.toArray(array); //耗时: 每次修改了集合之后都需要构造一个新数组来返回
+        	isModified = false;
+        }
+        return array[random];
     }
 }
-// <10%
+<10%
