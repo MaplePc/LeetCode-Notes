@@ -5,63 +5,44 @@ remove(val): Removes an item val from the set if present.
 getRandom: Returns a random element from current set of elements. Each element must have the same probability of being returned.
 ===================================
 class RandomizedSet {
-    int capacity = 0;
-    int[] array;
+    HashMap<Integer, Integer> map;
+    ArrayList<Integer> list;
+    
     /** Initialize your data structure here. */
     public RandomizedSet() {
-        array = new int[10]; //初始容量
+        map = new HashMap<>();
+        list = new ArrayList<>();
     }
     
-    protected void extend(int val, int index){
-        if(capacity == array.length){ //需要扩容
-            int[] newSet = new int[capacity * 2];
-            System.arraycopy(array, 0, newSet, 0, index); //使用数组复制
-            newSet[index] = val;
-            System.arraycopy(array, index, newSet, index + 1, capacity - index);
-            
-            array = newSet;
-            capacity++;
-        }
-        else{ //不需要扩容
-            int size = capacity;
-            for(int i = size; i > index; i--){
-                array[i] = array[i - 1];
-            }
-            array[index] = val;
-            capacity++;
-        }
-    }    
-
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     public boolean insert(int val) {
-        int index = Arrays.binarySearch(array, 0, capacity, val); //二分查找
-        if(index > -1)
-            return false; //已经存在
-        else
-            extend(val, -index - 1);
-        return true;
+        if(!map.containsKey(val)){
+            map.put(val, list.size());
+            list.add(val);
+            return true;
+        }
+        return false;
     }
     
     /** Removes a value from the set. Returns true if the set contained the specified element. */
     public boolean remove(int val) {
-        int index = Arrays.binarySearch(array, 0, capacity, val); //二分查找
-        if(index > -1){ //存在元素
-            int size = capacity;
-            for(int i = index + 1; i < size; i++){
-                array[i - 1] = array[i];
+        Integer index = null;
+        if((index = map.remove(val)) != null){
+            int size = list.size();
+            if(index < size - 1){ //在这里元素的顺序不重要, 为了避免移动list中欲删除元素后面的元素, 把最后一个元素移动到欲删除的元素的位置
+                map.put(list.get(size - 1), index);
+                list.set(index, list.get(size - 1));
             }
-            capacity--;
+            list.remove(size - 1); //注意: 这里删除下标为index的元素
+            
             return true;
         }
-        else //不存在
-            return false;
+        return false;
     }
     
     /** Get a random element from the set. */
     public int getRandom() {
-        int randomNum = (int)(Math.random() * capacity);
-        return array[randomNum];
+        return list.get((int)(Math.random() * list.size()));
     }
 }
-//14%
-//耗时: 1.数组复制(移动位置), 2.二分查找
+//99%
