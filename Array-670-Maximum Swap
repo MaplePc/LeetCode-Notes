@@ -1,0 +1,53 @@
+Given a non-negative integer, you could swap two digits at most once to get the maximum valued number. Return the maximum valued number you could get.
+
+Example 1:
+Input: 2736
+Output: 7236
+Explanation: Swap the number 2 and the number 7.
+Example 2:
+Input: 9973
+Output: 9973
+Explanation: No swap.
+Note:
+The given number is in the range [0, 108]
+=====================================
+class Solution {
+    public int maximumSwap(int num) {
+        int n = num;
+        
+        int maxDigits = 0; //最大数字
+        int maxRight = 1; //最大数字的位权
+        int toSelDigits = 0; //候选最大数字
+        int toSelRight = 1; //候选最大数字的位权
+        
+        int minDigits = 9; //最小数字
+        int minRight = Integer.MAX_VALUE; //最小数字的位权
+        
+        int right = 1; //计算位权
+        do{
+            int v = n % 10; //当前位数字
+            int nextN = n / 10; //下一个数
+            if(v > toSelDigits && nextN > 0){ //获得除了最高位以外的最大数字, 作为候选
+                toSelDigits = v;
+                toSelRight = right;
+            }
+            else if(v < toSelDigits){
+                minDigits = v;
+                minRight = right;
+                
+                maxDigits = toSelDigits; //选择候选数字和位权
+                maxRight = toSelRight;
+            }
+            n = nextN;
+            right *= 10;
+        }while(n > 0);
+        
+        if(minDigits < maxDigits){ //位置互换
+            int diff = maxDigits - minDigits;
+            num += diff * minRight - diff * maxRight;
+        }
+        
+        return num;
+    }
+}
+//曾经100%
