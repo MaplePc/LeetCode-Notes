@@ -27,17 +27,16 @@ class Solution {
         int len = nums.length;
         if(len == 0)
             return -1;
-        int[] sum = new int[len]; //sum[i]为下标<=i的元素之和
-        sum[0] = nums[0];
-        for(int i = 1; i < len; i++){
-            sum[i] += sum[i - 1] + nums[i];
-        }
-        
+        int sum = 0;
+        for(int v : nums)
+            sum += v;
+        int leftSum = 0;
         for(int i = 0; i < len; i++){
-            if(sum[len - 1] - sum[i] == sum[i] - nums[i]) //sum[0] + sum[1] + ... + sum[i - 1] == sum[i + 1] + sum[i + 2] +...+ sum[len - 1]
+            if(sum - leftSum - nums[i] == leftSum)
                 return i;
+            leftSum += nums[i];
         }
         return -1;    
     }   
 }
-//50%
+//80%
