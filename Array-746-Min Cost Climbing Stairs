@@ -16,14 +16,9 @@ Every cost[i] will be an integer in the range [0, 999].
 ======================================================
 class Solution {
     public int minCostClimbingStairs(int[] cost) {
-        int left = 0;
-        int right = 0;
-        for(int i = 0; i < cost.length; i++){
-            int temp = cost[i] + Math.min(left, right);
-            left = right;
-            right = temp;
-        }
-        return Math.min(left, right);
+        for(int i = 2; i < cost.length; i++)
+            cost[i] += Math.min(cost[i - 1], cost[i - 2]);
+        return Math.min(cost[cost.length - 1], cost[cost.length - 2]);
     }
 }
 //动态规划: 到达每一步的耗费=min(到达该步前1步的耗费, 到达该步前2步的耗费)
