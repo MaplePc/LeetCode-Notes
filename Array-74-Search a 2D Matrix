@@ -13,47 +13,24 @@ Consider the following matrix:
 ]
 Given target = 3, return true.
 ==========================================
-class Solution {
-    public boolean searchMatrix(int[][] m, int tar) {
-        int row = m.length;
-        if(row == 0)
+public class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if(matrix == null || matrix.length ==0 || matrix[0].length == 0) {
             return false;
-        int col = m[0].length;
-        if(col == 0)
-            return false;
-		
-        int top = 0; //定义为tar所在的行
-        int bottom = row; 
-        int mid = 0;
-        while(top < bottom){ //先确定tar在哪一行
-            mid = top + (bottom - top) / 2;
-            if(tar > m[mid][col - 1])
-                top = mid + 1;
-            else if(tar < m[mid][col - 1])
-                bottom = mid;
-            else
-                return true;
         }
         
-        if(top == row)
-            return false;
-        
-        int left = 0;
-        int right = col;
-        mid = 0;
-        while(left < right){ //确定tar在该行的哪一列(手动实现)
-            mid = left + (right - left) / 2;
-            if(tar > m[top][mid])
-                left = mid + 1;
-            else if(tar < m[top][mid])
-                right = mid;
-            else
-                return true;
-        }
-        if(m[top][left] == tar)
+        int i = matrix.length-1;
+        int j =0;
+        while(i >= 0 && j <= matrix[0].length -1) {
+        if(matrix[i][j] == target) {
             return true;
+        } else if(matrix[i][j] > target) {
+             i --;
+        } else {
+            j++;
+        }
+        }
         return false;
-        
     }
 }
 //36%
