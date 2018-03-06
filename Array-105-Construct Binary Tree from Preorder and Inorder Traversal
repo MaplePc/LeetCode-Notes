@@ -20,39 +20,19 @@ class Solution { //改进版
     }
     
     public TreeNode helper(int[] preorder, int[] inorder, Integer rootVal){
-        if(pre >= preorder.length || in >= inorder.length || (rootVal != null && rootVal == inorder[in]))
+        //构造左子树时到达父结点; 构造右子树时到达父结点的父结点
+        if(pre >= preorder.length || in >= inorder.length || (rootVal != null && rootVal == inorder[in])) 
             return null;
         TreeNode node = new TreeNode(preorder[pre++]);
-        node.left = helper(preorder, inorder, node.val);
-        in++;
+        node.left = helper(preorder, inorder, node.val); //构造左子树,以当前结点为界
+        in++; //与pre++操作相对应
         
-        node.right = helper(preorder, inorder, rootVal);
-        
+        node.right = helper(preorder, inorder, rootVal); //构造右子树, 以当前结点的父结点为界
+         
         return node;
     }
 }
 //98%
-
-//原版(有bug):
-class Solution {
-    
-    private int pre = 0;
-    private int in = 0;
-    
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        //########如果Integer.MIN_VALUE也出现在数组中, 算法就可能错误了#########
-        return helper(preorder, inorder, Integer.MIN_VALUE);
-    }
-    
-    private TreeNode helper(int[] preorder, int[] inorder, int rootVal) {
-        if (pre >= preorder.length || in >= inorder.length || inorder[in] == rootVal) {
-            return null;
-        }
-        TreeNode root = new TreeNode(preorder[pre++]);
-        root.left = helper(preorder, inorder, preorder[pre - 1]);
-        in++;
-        root.right = helper(preorder, inorder, rootVal);
-        return root;
-    }
-}
-//98%
+//例子: 每个在前序数组中依次出现的结点, 在中序数组中, 该结点左边的为左子树, 右边直到其父结点的为右子树
+//前序遍历: 1 2 4 7 3 5 6 8
+//中序遍历: 4 7 2 1 5 3 8 6
