@@ -14,32 +14,45 @@ The length of words will be in the range of [1, 5000].
 The length of words[i] will be in the range of [1, 50].
 ============================================
 class Solution {
-    public int numMatchingSubseq(String S, String[] words) {
-        Map<String, Boolean> results = new HashMap<>();
-        int count = 0;
-        for(String str : words){
-            if(exists(results, str, S))
-                count++;
-        }    
-        return count;
-    }
-    
-    public boolean exists(Map<String, Boolean> results, String str, String tar){
-        Boolean b = results.get(str); //在HashMap中比较字符串
-        if(b != null)
-            return b;
-        
-        int index = 0;
-        for(int i = 0; i < str.length(); i++){
-            index = tar.indexOf(str.charAt(i), index); //又比较字符串
-            if(index < 0){
-                results.put(str, false);
-                return false;
-            }
-            index++;
-        }
-        results.put(str, true);
-        return true;
-    }
+
+	public int numMatchingSubseq(String S, String[] words) {
+		TreeSet<Integer>[] poss = new TreeSet[26];
+		for (int i = 0; i < 26; i++) {
+			poss[i] = new TreeSet();
+		}
+
+		for (int i = 0; i < S.length(); i++) {
+			poss[S.charAt(i) - 'a'].add(i); //使用TreeSet来寻找大于等于某个数的最小数
+		}
+
+		Map<String, Boolean> results = new HashMap<>();
+		int count = 0;
+		for (String str : words) {
+			if (exists(results, str, poss))
+				count++;
+		}
+		return count;
+	}
+
+	public boolean exists(Map<String, Boolean> results, String str, TreeSet<Integer>[] poss) {
+		Boolean b = results.get(str); //在HashMap中比较字符串
+		if (b != null)
+			return b;
+
+		Integer nextPos = 0;
+		int i = 0;
+		for (; i < str.length(); i++) {
+			nextPos = poss[str.charAt(i) - 'a'].ceiling(nextPos);
+			if (nextPos == null) {
+				results.put(str, false);
+				return false;
+			}
+			nextPos++;
+		}
+		results.put(str, true);
+		return true;
+	}
 }
-//其他人的solution, 98%, 缓存了前面的字符串的查找结果, 但如果words中所有的字符串都不相同, 那么效果反而是最差的
+//32%, 使用TreeSet来加速查询和使用HashMap来存储结果, 效率反而没有单独使用HashMap高
+//一个方面是使用了额外的空间和额外的操作
+//另一个方面可能是word比较短, 而且有很多重复
