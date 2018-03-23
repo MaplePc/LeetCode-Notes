@@ -19,28 +19,41 @@ nums.length will be between 1 and 50,000.
 nums[i] will be an integer between 0 and 49,999
 ===============================================
 class Solution {
-	public int findShortestSubArray(int[] nums) {
+	public static class Node {
+		int start;
+		int degree;
 
-		char[][] map = new char[50000][2]; //[0]=起始,[1]=计数/度数
-		char degree = 0;
-		char length = 0;
-		for (char i = 0; i < nums.length; i++) {
-			map[nums[i]][1]++;
-
-			if (map[nums[i]][1] == 1) { //第一次出现
-				map[nums[i]][0] = i;
-			}
-			if (map[nums[i]][1] == degree) {
-				length = (char) Math.min(length, i - map[nums[i]][0] + 1);
-			} else if (map[nums[i]][1] > degree) {
-				degree = map[nums[i]][1];
-				length = (char) (i - map[nums[i]][0] + 1);
-			}
+		public Node(int s, int d) {
+			start = s;
+			degree = d;
 		}
-		return length;
 	}
+
+	public int findShortestSubArray(int[] nums) {
+        Map<Integer, Node> map = new HashMap<>();
+        int degree = 0;
+        int length = 0;
+        for(int i = 0; i < nums.length; i++){
+            Node n = map.get(nums[i]);
+            if(n == null){
+                n = new Node(i, 1);
+                map.put(nums[i], n);
+            }
+            else
+                n.degree++;
+                
+                if(n.degree == degree){
+                    length = Math.min(length, i - n.start + 1);
+                }
+                else if(n.degree > degree){
+                    degree = n.degree;
+                    length = i - n.start + 1;
+                }
+            
+        }
+		return length;
+    }
 }
-//2%-4%, mmp, 应该是样例数据太少了, 每次开辟50000空间性价比不高
-//数据量太少且取值范围较宽的时候不适合用hash数组
-//太稀疏, 空间利用率太低, 而开辟连续内存可能还要进行GC
-//hash带来的效率的提升被开辟空间消耗的时间抵消掉了
+//97%
+//Node还可以使用int[2]代替
+//甚至可以不用Map, 用三个int[](或char[])
