@@ -1,0 +1,45 @@
+The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+
+P   A   H   N
+A P L S I I G
+Y   I   R
+And then read line by line: "PAHNAPLSIIGYIR"
+Write the code that will take a string and make this conversion given a number of rows:
+
+string convert(string text, int nRows);
+convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+进一步解释:
+convert("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 4) should return "AGMSYBFHLNRTXZCEIKOQUWDJPV".
+可以直接压缩成
+AG M S Y
+BFHLNRTXZ
+CEIKOQUW
+D J P V
+下面这个算法没有利用这个规律
+========================================================
+class Solution {
+    public String convert(String s, int rows) {
+	    	if(s == null || s.length() == 0 || rows <= 1)
+           return s;
+	    	final int len = s.length();
+	    	List[] queues = new List[rows]; //不能实例化泛型数组
+	    	for(int i = 0; i < rows; i++){
+	    		queues[i] = new LinkedList<>();
+	    	}
+	    	for(int i = 0, pos = 0; i < len;){
+	    		while(pos < rows && i < len)
+	    			queues[pos++].add(s.charAt(i++));
+                pos -= 2;
+	    		while(pos > -1 && i < len)
+	    			queues[pos--].add(s.charAt(i++));
+                pos += 2;
+	    	}
+	    	StringBuilder sb = new StringBuilder();
+	    	for(List q : queues){
+	    		for(Object c : q)
+	    			sb.append(c);
+	    	}
+	    	return sb.toString();
+	    }
+}
+//30%, O(n)
