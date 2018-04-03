@@ -1,0 +1,65 @@
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+Example:
+
+Input: "babad"
+
+Output: "bab"
+
+Note: "aba" is also a valid answer.
+ 
+
+Example:
+
+Input: "cbbd"
+
+Output: "bb"
+=========================================================
+static class Solution {
+	public String longestPalindrome(String s) {
+		final int len1 = s.length() - 1;
+		int max = 1; //回文串的长度
+		int maxL = -1;
+		int maxR = -1;
+		for (int i = 0; i < len1; i++) { //回文串的左端
+			int l = i;
+			int r = len1; //每次都以字符串的最右端作为右端
+			char c = s.charAt(l);
+
+			while (true) {
+				while (l < r && s.charAt(r) != c) { //右端与左端相等
+					r--;
+				}
+				if (l >= r) {
+					break; //遍历完全,左端不可能是回文串的开端
+				}
+
+				int start = l;
+				int end = r;
+				while (l < r && s.charAt(l) == s.charAt(r)) { //两端一起走, 注意反超变成l > r
+					l++;
+					r--;
+				}
+
+				if (l >= r) { //找到一个回文串
+					if (end - start + 1 > max) {
+						max = end - start + 1;
+						maxL = start;
+						maxR = end;
+						break; //找到了以左端为开端的最长回文串
+					}
+				} else {
+					l = i;
+					r = end - 1;
+				}
+			}
+			if (max >= len1 - i) //如果接下来不可能再找到更长的回文串
+				break;
+		}
+		if (maxL > -1) {
+			return s.substring(maxL, maxR + 1);
+		}
+		return s.substring(s.length() - 1, s.length());
+	}
+}
+//暴力, O(n3), 3%-5%
