@@ -17,40 +17,28 @@ Output: "bb"
 =========================================================
 class Solution {
     public String longestPalindrome(String s) {
-			final int len1 = s.length() - 1;
-			int max = 1; //回文串的长度
-			int maxL = -1;
-			int maxR = -1;
-			for (int i = 0; i < len1; i++) { //回文串的中间
-				//情况一: 回文串是偶数个字符
-				int l = i;
-				int r = i + 1;
-				while (l > -1 && r <= len1 && s.charAt(l) == s.charAt(r)) { //贪婪搜索
+			int max = 1;
+			int start = 0;
+			int len1 = s.length() - 1;
+			char[] cs = s.toCharArray();
+			for(int i = 0; i < len1;){
+				int l = i - 1;
+				int r = i;
+				while(r < len1 && cs[r] == cs[r + 1]){ //跳过相等的元素
+					r++;
+				}//此时r后面没有元素或[r]!=[r+1]
+				r++; 
+				i = r; //下一次回文串搜索: 从第一个与左边连续相等的元素不等的元素开始
+				while(l > -1 && r <= len1 && cs[r] == cs[l]){
 					l--;
 					r++;
 				}
-				if (r - l - 1 > max) { //回文串终止
+				if(r - l - 1 > max){
 					max = r - l - 1;
-					maxL = l + 1;
-					maxR = r - 1;
-				}
-
-				//情况二: 回文串有奇数个字符
-				l = i - 1;
-				r = i + 1;
-				while (l > -1 && r <= len1 && s.charAt(l) == s.charAt(r)) { //贪婪搜索
-					l--;
-					r++;
-				}
-				if (r - l - 1 > max) {
-					max = r - l - 1;
-					maxL = l + 1;
-					maxR = r - 1;
+					start = l + 1;
 				}
 			}
-			if (max > 1) 
-				return s.substring(maxL, maxR + 1);
-			return s.substring(len1, len1 + 1);
-    }
+			return s.substring(start, start + max);
+		}
 }
-// O(n2), 30%
+//优化了回文串中间连续相等字符的情况, O(n2), 70%-90%
