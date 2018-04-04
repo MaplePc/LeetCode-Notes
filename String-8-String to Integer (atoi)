@@ -1,0 +1,50 @@
+Implement atoi to convert a string to an integer.
+
+Hint: Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.
+
+Notes: It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front.
+
+ 
+
+Requirements for atoi:
+
+The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.
+
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
+
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+
+If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
+===============================================================
+class Solution {
+	    public int myAtoi(String str) {
+	        if(str == null || str.length() == 0)
+	            return 0;
+	        boolean positive = true;
+	    	try{
+	            int len;
+	            int i = 0;
+	            str = str.trim();
+	            char[] cs = str.toCharArray();
+	            len = str.length();
+	            
+	            if(cs[0] == '+')
+	                i++;
+	            else if(cs[0] == '-'){
+	                i++;
+	                positive = false;
+	            }
+	            while(i < len && cs[i] >= '0' && cs[i] <= '9')
+	                i++; //i是第一个不符合要求的字符
+	            if(i == 0 || i == 1 && (cs[0] == '+' || cs[0] == '-')) //根本没有需要转换的数字: 只有+-符合要求, 或者i==0
+	                return 0;
+	            return Integer.parseInt(str.substring(0, i));
+	        }
+	        catch(Exception e){
+	            if(positive)
+	                return Integer.MAX_VALUE;
+	            return Integer.MIN_VALUE;
+	        }
+	    }
+	}
+//20%-30%
