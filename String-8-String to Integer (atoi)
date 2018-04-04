@@ -19,70 +19,36 @@ If no valid conversion could be performed, a zero value is returned. If the corr
 class Solution {
     public int myAtoi(String str) {
         //str是null或长度为0
-	    //str是null或长度为0
 	        if(str == null || str.length() == 0)
 	        	return 0;
-	        str = str.trim();
 	        int len = str.length();
-	        char[] cs = str.toCharArray();
-	        int i = 0;
-	        int res = 0;
+	        long res = 0;
 	        
-	        int thresholdValue;
-	        String threshold;
+	        int i = 0;
 	        int positive = 1; //1为正, -1为负
-	        if(cs[0] == '-'){ //如果后面还有数字, 那么格式正确
-	        	thresholdValue = Integer.MAX_VALUE;
-	        	threshold = String.valueOf(thresholdValue); //负数的最小值取MAX_VALUE, 最前面没有正负号
+	        while(i < len && str.charAt(i) == ' ')
+	        	i++;
+	        if(i == len)
+	        	return 0;
+	        if(str.charAt(i) == '-'){ //如果后面还有数字, 那么格式正确
 	        	positive = -1;
 	        	i++;
 	        }
-	        else{
-	        	thresholdValue = Integer.MAX_VALUE;
-	        	threshold = String.valueOf(thresholdValue);
-	        	if(cs[0] == '+') //如果后面还有数字, 那么格式正确
-	        		i++;
-	        }
-	        final int maxLen = threshold.length(); 
+	        else if(str.charAt(i) == '+') //如果后面还有数字, 那么格式正确
+	        	i++;
 	        
 	        //str包含非数字, 非+-(或出现位置不当)字符
-	        int notZero = -1; //标记第一个非0值出现的位置
-	        while(i < len && '0' <= cs[i] && cs[i] <= '9'){//i是第一个不符合的字符
-	        	if('0' != cs[i] && notZero == -1)
-	        		notZero = i;
-	        	i++;
+	        long threshold = Integer.MAX_VALUE;
+	        if(positive == -1)
+	        	threshold++;
+	        for(;i < len && '0' <= str.charAt(i) && str.charAt(i) <= '9'; i++){
+	        	res = res * 10 + str.charAt(i) - '0';
+	        	if(res > threshold) //溢出
+	        		return (int)threshold * positive;
 	        }
-	        
-	        if(i == 0 || i == 1 && (cs[0] == '+' || cs[0] == '-')) //字符串没有一个数字
+	        if(i == 0 || (i == 1 && (str.charAt(0) == '+' || str.charAt(0) == '-'))) //字符串没有一个数字
 	        	return 0;
-	        //以0开头
-	        if(notZero == -1) //全是0
-	        	return 0;
-	        //长度溢出
-	        int numLen = i; //数串的长度
-	        if(cs[0] == '+' || cs[0] == '-') //包含+, -号
-	        		numLen--;
-	        if(numLen > maxLen) //字符长度溢出
-	        	return (positive == 1 ? thresholdValue : thresholdValue + 1) * positive;
-	        else if(numLen == maxLen){ //字符长度相等
-	        	boolean impossible = true;
-	        		for(int j = notZero; j < i; j++){
-	        			if(cs[j] < threshold.charAt(j - notZero))
-	        				impossible = false;
-	        			else if(impossible && cs[j] > threshold.charAt(j - notZero) && (
-		        				j - notZero < maxLen - 1 
-		        				|| positive == 1 
-		        				|| cs[j] == '9')){ //某一位大于最大值
-		        			return (positive == 1 ? thresholdValue : thresholdValue + 1) * positive;
-		        		}
-			        	res = res * 10 + cs[j] - '0';
-			        }
-	        }
-	        else{
-	        	for(int j = notZero; j < i; j++)
-		        	res = res * 10 + cs[j] - '0';
-	        }
-	        return res * positive;
+	        return (int) res * positive;
     }
 }
-//40%-70%, 应该是目前写过最长的leetcode代码了
+//50%-70%
