@@ -1,0 +1,35 @@
+Implement strStr().
+
+Return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+Example 1:
+
+Input: haystack = "hello", needle = "ll"
+Output: 2
+Example 2:
+
+Input: haystack = "aaaaa", needle = "bba"
+Output: -1
+===================================
+class Solution {
+    public int strStr(String haystack, String needle) {
+        if(needle.length() == 0)
+            return 0;
+        if(haystack.length() == 0)
+            return -1;
+        final int nlen = needle.length();
+        final int hlen = haystack.length();
+        int  i = 0;
+        for(int j = 0; i < hlen - (nlen - 1); ){ //i的起始下标
+            while(haystack.charAt(i++) == needle.charAt(j)){
+                j++;
+                if(j == nlen)
+                    return i - nlen;
+            }
+            i -= j; //i回退
+            j = 0; //重头开始匹配
+        }
+        return -1;
+    }
+}
+//55%
