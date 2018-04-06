@@ -8,8 +8,11 @@ Note:
 Although the above answer is in lexicographical order, your answer could be in any order you want.
 ==================================
 class Solution {
-    public List<String> letterCombinations(String digits) {
-        if(digits == null || digits.length() == 0)
+	public static void main(String[] args){
+		new Solution().letterCombinations("9387");
+	}
+	public List<String> letterCombinations(String digits) {
+    	if(digits == null || digits.length() == 0)
     		return new LinkedList<String>();
         char[][] cs= {
         		{'a','b','c'},
@@ -22,30 +25,41 @@ class Solution {
         		{'t','u','v'},
         		{'w','x','y','z'}
         };
-        List<StringBuilder> list = new LinkedList<>();
         final int len = digits.length();
-        char[] first = cs[digits.charAt(0) - '2'];
-        for(char c : first){ //读入第一个数字
-        	list.add(new StringBuilder().append(c)); //char不是CharSequence, 只能转型为int作为(int capacity)
+        int resSize = 1;
+        for(int i = 0; i < len; i++){
+        	char c = digits.charAt(i);
+        	if(c == '7' || c == '9')
+        		resSize *= 4;
+        	else
+        		resSize *= 3;
         }
+        char[][] res = new char[resSize][len];
         
-        for(int i = 1; i < len; i++){ //读入其他数字
-        	List<StringBuilder> ls = new LinkedList<>();
-        	char[] next = cs[digits.charAt(i) - '2'];
-        	for(int j = 0; j < next.length - 1; j++){ //对于最后一个字母前面的字母
-        		for(StringBuilder builder : list)
-        			ls.add(new StringBuilder(builder).append(next[j]));
+        char c = digits.charAt(0);
+    	char[] optionC = cs[c - '2']; 
+        for(int k = 0; k < optionC.length; k++) //对于每一个可选字母
+        	res[k][0] = optionC[k];  
+    	resSize = optionC.length; //定义为结果集的大小
+    	
+        for(int i = 1; i < len; i++){ //对于字符串中的第一个数字以后的数字
+        	int newSize = resSize;
+        	optionC = cs[digits.charAt(i) - '2']; 
+        	for(int j = 0; j < optionC.length - 1; j++){ //对于最后一个字母以前的字母
+        		for(int k = 0; k < resSize; k++){ //对于上一次的集合
+        			System.arraycopy(res[k], 0, res[newSize], 0, i); //
+        			res[newSize++][i] = optionC[j];  //增加一个字母
+        		}
         	}
-        	for(StringBuilder builder : list)
-    			builder.append(next[next.length - 1]);
-        	list.addAll(ls);
+        	//对于最后一个字母
+        	for(int k = 0; k < resSize; k++) //对于上一次的集合
+    			res[k][i] = optionC[optionC.length - 1];  //多了一行结果
+        	resSize = newSize;
         }
-        
-        List<String> res = new LinkedList<>();
-        for(StringBuilder sb : list){
-        	res.add(sb.toString());
-        }
-        return res;
+        List<String> resList = new LinkedList<>();
+        for(char[] e : res)
+        	resList.add(new String(e));
+        return resList;
     }
 }
-//24%
+//70%
