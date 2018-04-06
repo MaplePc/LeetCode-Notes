@@ -1,0 +1,51 @@
+Given a digit string, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below.
+
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+Note:
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+==================================
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        if(digits == null || digits.length() == 0)
+    		return new LinkedList<String>();
+        char[][] cs= {
+        		{'a','b','c'},
+        		{'d','e','f'},
+        		{'g','h','i'},
+        		{'j','k','l'},
+        		
+        		{'m','n','o'},
+        		{'p','q','r', 's'},
+        		{'t','u','v'},
+        		{'w','x','y','z'}
+        };
+        List<StringBuilder> list = new LinkedList<>();
+        final int len = digits.length();
+        char[] first = cs[digits.charAt(0) - '2'];
+        for(char c : first){ //读入第一个数字
+        	list.add(new StringBuilder().append(c)); //char不是CharSequence, 只能转型为int作为(int capacity)
+        }
+        
+        for(int i = 1; i < len; i++){ //读入其他数字
+        	List<StringBuilder> ls = new LinkedList<>();
+        	char[] next = cs[digits.charAt(i) - '2'];
+        	for(int j = 0; j < next.length - 1; j++){ //对于最后一个字母前面的字母
+        		for(StringBuilder builder : list)
+        			ls.add(new StringBuilder(builder).append(next[j]));
+        	}
+        	for(StringBuilder builder : list)
+    			builder.append(next[next.length - 1]);
+        	list.addAll(ls);
+        }
+        
+        List<String> res = new LinkedList<>();
+        for(StringBuilder sb : list){
+        	res.add(sb.toString());
+        }
+        return res;
+    }
+}
+//24%
