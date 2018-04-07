@@ -1,0 +1,27 @@
+Given an absolute path for a file (Unix-style), simplify it.
+
+For example,
+path = "/home/", => "/home"
+path = "/a/./b/../../c/", => "/c"
+===========================================
+class Solution {
+	public String simplifyPath(String path) {
+		String[] splits = path.split("/");
+		LinkedList<String> list = new LinkedList<>();
+		for (String s : splits) {
+			if (s.equals("..")) {
+				if (list.size() > 0 && !(list.peek().equals("..")))
+					list.pop();
+			} else if (!s.equals(".") && !s.equals(""))
+				list.push(s);
+		}
+		StringBuilder sb = new StringBuilder();
+		for (Iterator<String> iter = list.descendingIterator(); iter.hasNext();) {
+			sb.append('/').append(iter.next());
+		}
+		String res = sb.toString();
+		return res.equals("") ? "/" : res;
+	}
+}
+//60%-80%
+//不理解为甚么/../..会变成/, 原意不是"上层的上层目录"吗? 怎么能化简成"当前目录"
