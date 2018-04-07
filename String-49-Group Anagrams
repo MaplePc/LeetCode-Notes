@@ -1,0 +1,34 @@
+Given an array of strings, group anagrams together.
+
+For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"], 
+Return:
+
+[
+  ["ate", "eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+Note: All inputs will be in lower-case.
+=========================================
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String s : strs){
+        	char[] countArr = new char[26]; //char范围: 0-65535
+        	final int len = s.length();
+        	for(int i = 0; i < len; i++){ //使用char[26]来计数
+        		countArr[s.charAt(i) - 'a']++;
+        	}
+        	String key = new String(countArr);
+        	
+        	List<String> list = map.get(key);
+        	if(list == null){ //int[]数组还没有出现过
+        		list = new LinkedList<>();
+        		map.put(key, list);
+        	}
+        	list.add(s);
+        }
+        return new LinkedList<>(map.values());
+    }
+}
+//97%, 因为int[]可能没有重写hashCode方法(), 即使内容完全相同的两个int[]的hashcode都不同, 所以不能直接使用int[]作为key
