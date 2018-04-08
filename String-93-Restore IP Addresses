@@ -1,0 +1,63 @@
+Given a string containing only digits, restore it by returning all possible valid IP address combinations.
+
+For example:
+Given "25525511135",
+
+return ["255.255.11.135", "255.255.111.35"]. (Order does not matter)
+======================================
+class Solution {
+	List<String> res = new LinkedList<>();
+	String s;
+	char[] cs;
+	int[] pos = new int[3]; //保存每个点后的数字的下标
+    public List<String> restoreIpAddresses(String s) {
+        final int len = s.length();
+        if(len < 4)
+            return res;
+        this.s = s;
+        cs = s.toCharArray();
+        helper(0, 3);
+        return res;
+    }
+    public void helper(int start, int n){ //需要分割的次数(后面还有多少个地址)
+    	if(n == 0){ //不需要再分割了,到了最后一个地址
+    		if(!isCorrect(start, cs.length)) //不符合要求
+    			return;
+    		int left = 0;
+    		StringBuilder sb = new StringBuilder();
+    		for(int v : pos){
+    			sb.append(cs, left, v - left).append('.');
+    			left = v;
+    		}
+    		sb.append(s.substring(left, cs.length));
+    		res.add(sb.toString());
+    		return;
+    	}
+    	if(cs[start] == '0'){ //0开头只能单独作为一个地址
+    		pos[3 - n] = start + 1;
+    		helper(start + 1, n - 1);
+            return;
+    	}
+    		
+    	int minLen = (cs.length - start) - (n * 3); //后面n个地址每个占3位
+    	minLen = minLen > 0 ? minLen : 1; //
+    	int maxLen = (cs.length - start) - n; //后面n个地址每个占1位
+    	maxLen = maxLen < 4 ? maxLen : 3; //?
+    	for(int i = minLen; i <= maxLen; i++){ //可能取的长度
+    		if(isCorrect(start, start + i)){
+                pos[3 - n] = start + i;
+    			helper(start + i, n - 1);
+    		}
+    	}
+    }
+    public boolean isCorrect(int l, int r){ //l包含, r不包含
+    	int len = r - l;
+        if(len > 3 || len < 1)
+            return false;
+    	if(cs[l] == '0' && len > 1)
+    		return false;
+    	if(len == 3 && (cs[l] > '2' || cs[l] == '2' && (cs[l + 1] > '5' || cs[l + 1] == '5' && cs[l + 2] > '5')))
+    		return false;
+    	return true;
+    }
+}
