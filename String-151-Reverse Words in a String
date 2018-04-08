@@ -1,0 +1,50 @@
+Given an input string, reverse the string word by word.
+
+For example,
+Given s = "the sky is blue",
+return "blue is sky the".
+
+Update (2015-02-12):
+For C programmers: Try to solve it in-place in O(1) space.
+===========================================
+class Solution {
+    public String reverseWords(String s) {
+        int len = s.length();
+        if(len == 0)
+            return s;
+        int l = 0;
+        int r = len - 1;
+        while(l < len && s.charAt(l) == ' ') //trim左边的空格
+        	l++;
+        if(l == len)
+        	return "";
+        while(r > -1 && s.charAt(r) == ' ') //trim右边的空格
+        	r--;
+        len = r - l + 1;
+        int end = r; //最后一个字母
+        r = l;
+        char[] cs = new char[len];
+        int newl = len;
+        int actualLen = 0;
+        for(; r <= end; ){ //不要乱加r++
+            while(r <= end && s.charAt(r) != ' ') //单词终结
+                r++;
+            int wordLen = r - l;
+            actualLen += wordLen;
+            int j = newl - wordLen; //单词的首字母新位置
+            if(r < end){
+            	cs[j - 1] = ' '; //单词前的空格
+            	actualLen++;
+            }
+            for(; j < newl; j++)
+                cs[j] = s.charAt(l++);
+            newl -= wordLen + 1; //单词新位置前一个位置
+            
+            while(r <= end && s.charAt(r) == ' ') //跳过单词之间的空格
+            	r++;
+            l = r;
+        }
+        return new String(cs, cs.length - actualLen, actualLen);
+    }
+}
+//77%
