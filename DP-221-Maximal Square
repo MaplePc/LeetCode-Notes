@@ -1,0 +1,60 @@
+Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+
+For example, given the following matrix:
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+Return 4.
+Credits:
+Special thanks to @Freezen for adding this problem and creating all test cases.
+=================================
+class Solution {
+    public int maximalSquare(char[][] m) {
+        final int row = m.length;
+        if(row == 0)
+            return 0;
+		final int col = m[0].length;
+		int width = 0;
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) { //选取左上角
+				if (m[i][j] == '0')
+					continue;
+				int w = 0; //边的增量
+				int x;
+				int y;
+				while (i + w + 1 < row) {
+                    w++;
+                    x = i + w;
+					y = j;
+					while (y <= j + w && y < col) {
+						if (m[x][y] == '0')
+							break;
+						y++;
+					}
+					if (y <= j + w) { //不能构成矩形, 终止
+						w--;
+						break;
+					}
+					y--;
+					x--;
+					while (x >= i) {
+						if (m[x][y] == '0') {
+							break;
+						}
+						x--;
+					}
+					if (x >= i) {
+						w--;
+						break;
+					}
+					//构成了矩形
+				}
+				width = w + 1 > width ? w + 1 : width;
+			}
+		}
+		return width * width;
+    }
+}
+//77%, O(n2)
