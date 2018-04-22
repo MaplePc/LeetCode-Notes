@@ -8,14 +8,18 @@ Special thanks to @jianchao.li.fighter for adding this problem and creating all 
 class Solution {
     public int numSquares(final int n) {
         int[] dp = new int[n + 1];
+        final int x = (int)Math.sqrt(n);
+        int[] sqrtArr = new int[x + 1];
+        for(int i = 1; i <= x; i++)
+            sqrtArr[i] = i * i;
         for(int i = 1; i <= n; i++){
             int min = Integer.MAX_VALUE;
-            for(int j = 1; j * j <= i; j++)
-                min = Math.min(min, dp[i - j * j] + 1);
+            for(int j = 1; j <= x && sqrtArr[j] <= i; j++)
+                min = Math.min(min, dp[i - sqrtArr[j]] + 1);
             dp[i] = min;
         }
         return dp[n];
 	}
 }
-//74%, O(n2)
+//92%, O(n2)
 //从1迭代dp到n, 对于每个值, 分解成两部分: 1(某个数的平方a) + dp[该值-a]
