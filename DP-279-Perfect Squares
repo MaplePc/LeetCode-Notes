@@ -1,0 +1,33 @@
+Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
+
+For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, return 2 because 13 = 4 + 9.
+
+Credits:
+Special thanks to @jianchao.li.fighter for adding this problem and creating all test cases.
+================================================
+class Solution {
+    public int numSquares(final int n) {
+        final int x = (int)Math.sqrt(n);
+        if(x * x == n)
+        	return 1;
+        int[] dp = new int[x + 1];
+        for(int i = x; i > 0; i--)
+        	dp[i] = i * i;
+        
+        int[] data = new int[n + 1];
+        for(int i = 1, j = 1; i <= n; i++){
+        	if(j <= x && i == dp[j]){
+        		data[i] = 1; //等于一个已有的平方数, 只需一种组合
+        		j++;
+        		continue;
+        	}
+        	int min = Integer.MAX_VALUE;
+        	int half = i / 2;
+        	for(int k = 1; k <= half; k++) //分解成data[1]+data[i-1], data[2]+data[i-2],...
+        		min = Math.min(min, data[k] + data[i - k]);
+        	data[i] = min;
+        }
+        return data[n];
+	}
+}
+//10%, O(n2)
