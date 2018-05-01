@@ -1,0 +1,58 @@
+Given a 2D matrix matrix, find the sum of the elements inside the rectangle defined by its upper left corner (row1, col1) and lower right corner (row2, col2).
+
+Range Sum Query 2D
+The above rectangle (with the red border) is defined by (row1, col1) = (2, 1) and (row2, col2) = (4, 3), which contains sum = 8.
+
+Example:
+Given matrix = [
+  [3, 0, 1, 4, 2],
+  [5, 6, 3, 2, 1],
+  [1, 2, 0, 1, 5],
+  [4, 1, 0, 1, 7],
+  [1, 0, 3, 0, 5]
+]
+
+sumRegion(2, 1, 4, 3) -> 8
+sumRegion(1, 1, 2, 2) -> 11
+sumRegion(1, 2, 2, 4) -> 12
+Note:
+You may assume that the matrix does not change.
+There are many calls to sumRegion function.
+You may assume that row1 ≤ row2 and col1 ≤ col2.
+===========================================
+class NumMatrix {
+    private int[][] dp;
+    public NumMatrix(int[][] m) {
+        if(m == null || m.length == 0 || m[0].length == 0)
+            return;
+        final int row = m.length;
+        final int col = m[0].length;
+        dp = m;
+        //dp = new int[row][col];
+        for(int i = 0; i < row; i++){ //计算从(0,0)到当前位置(i,j)的所有元素的和, 填入(i,j)中
+            for(int j = 0; j < col; j++){
+                if(j + 1 < col)
+                    dp[i][j + 1] += dp[i][j]; //为了避免重复计算, 先求列的和
+                if(i - 1 > -1)
+                    dp[i][j] += dp[i - 1][j]; //再求当前矩阵的和
+            }
+        }
+    }
+    
+    public int sumRegion(int r1, int c1, int r2, int c2) {
+        int res = dp[r2][c2];
+        if(r1 - 1 > -1 && c1 - 1 > -1) //左上角
+            res += dp[r1 - 1][c1 - 1];
+        if(r1 - 1 > -1) //顶部矩形
+            res -= dp[r1 - 1][c2];
+        if(c1 - 1 > -1) //右部矩形
+            res -= dp[r2][c1 - 1];
+        return res;
+    }
+}
+//O(n), 75%
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * NumMatrix obj = new NumMatrix(matrix);
+ * int param_1 = obj.sumRegion(row1,col1,row2,col2);
+ */
