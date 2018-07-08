@@ -6,16 +6,30 @@ Note: You may assume that n is not less than 2 and not larger than 58.
 ===========================================
 class Solution {
     public int integerBreak(int n) {
-        int dp[] = new int[n + 1];
-        dp[1] = dp[2] = 1;
-        for(int i = 3; i <= n; i++){
-            for(int j = 1; j * 2 <= i; j++){
-                int max = Math.max(j, dp[j]) * Math.max(i - j, dp[i - j]); //分成j和i - j两部分, 每部分取分解前和分解后的最大值
-                dp[i] = Math.max(max, dp[i]);
+        int res = 0;
+        for(int i = 2; ; i++){ //分割的份数
+            int sum = n;
+            int tempI = i;
+            int prod = 1;
+            int quotient = sum / i; // 商
+            while(sum % tempI != 0){
+                sum -= quotient;
+                prod *= quotient;
+                tempI--;
+            }  
+            quotient = sum / tempI;
+            for(; tempI > 0; tempI--){
+                prod *= quotient;
             }
+            
+            if(prod > res) //乘积先递增后递减
+                res = prod;
+            else
+                break;
         }
-        return dp[n];
+        return res;
     }
 
 }
-//70%
+//100%
+//分成两部分进行等分, 第一部分是和除以份数的商, 随着和,份数的减少, 第二部分最终能够重新等分
