@@ -13,22 +13,11 @@ Can you do it like a boss? Do it without using any builtin function like __built
 ============================
 class Solution {
     public int[] countBits(int n) {
-        if(n == 0)
-            return new int[]{0};
-        else if(n == 1)
-            return new int[]{0,1};
         int res[] = new int[n + 1];
-        res[0] = 0;
-        res[1] = 1;
-        for(int i = 2, start = 0, threshold = 4; i <= n; ){
-            if(i == threshold){
-                start = 0;
-                threshold *= 2;
-            }
-            res[i++] = res[start++] + 1;
+        for(int i = 1; i <= n; i++){
+            res[i] = res[i / 2] + i % 2;
         }
         return res;
     }
 }
 //100%
-//找规律, 2, 4, 8, 16...是重复出现的节点
