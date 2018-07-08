@@ -4,32 +4,17 @@ For example, given n = 2, return 1 (2 = 1 + 1); given n = 10, return 36 (10 = 3 
 
 Note: You may assume that n is not less than 2 and not larger than 58.
 ===========================================
-class Solution {
+cclass Solution {
     public int integerBreak(int n) {
-        int res = 0;
-        for(int i = 2; ; i++){ //分割的份数
-            int sum = n;
-            int tempI = i;
-            int prod = 1;
-            int quotient = sum / i; // 商
-            while(sum % tempI != 0){
-                sum -= quotient;
-                prod *= quotient;
-                tempI--;
-            }  
-            quotient = sum / tempI;
-            for(; tempI > 0; tempI--){
-                prod *= quotient;
-            }
-            
-            if(prod > res) //乘积先递增后递减
-                res = prod;
-            else
-                break;
+        if(n == 2 || n == 3)
+            return n - 1;
+        int res = 1;
+        while(n > 4){
+            res *= 3;
+            n -= 3;
         }
+        res *= n;
         return res;
     }
-
 }
 //100%
-//分成两部分进行等分, 第一部分是和除以份数的商, 随着和,份数的减少, 第二部分最终能够重新等分
