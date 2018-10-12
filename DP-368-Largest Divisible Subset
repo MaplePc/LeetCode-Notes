@@ -1,0 +1,63 @@
+Given a set of distinct positive integers, find the largest subset such that every pair (Si, Sj) of elements in this subset satisfies:
+
+Si % Sj = 0 or Sj % Si = 0.
+
+If there are multiple solutions, return any subset is fine.
+
+Example 1:
+
+Input: [1,2,3]
+Output: [1,2] (of course, [1,3] will also be ok)
+Example 2:
+
+Input: [1,2,4,8]
+Output: [1,2,4,8]
+=============================================================
+class Solution {
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        if(nums.length == 0)
+            return new LinkedList<Integer>();
+        LinkedList<LinkedList<Integer>> res = new LinkedList<>();
+        Arrays.sort(nums);
+        
+        LinkedList<Integer> set = new LinkedList<>();
+        set.addFirst(Integer.valueOf(nums[nums.length - 1]));
+        res.addFirst(set);
+        for(int i = nums.length - 2; i > -1; i--){
+            boolean found = false;
+            int maxSize = -1;
+            LinkedList<Integer> maxSet = null;
+            for(Iterator<LinkedList<Integer>> iter = res.iterator(); iter.hasNext(); ){
+                set = iter.next();
+                if(set.getFirst() % nums[i] == 0 && set.size() > maxSize){
+                    found = true;
+                    maxSize = set.size();
+                    maxSet = set;
+                }
+            }
+            if(!found){
+                set = new LinkedList<>();
+                set.addFirst(Integer.valueOf(nums[i]));
+                res.addFirst(set);
+            } else {
+                set = (LinkedList<Integer>) maxSet.clone();
+                res.addFirst(set);
+                set.addFirst(Integer.valueOf(nums[i]));
+            }
+            
+        }    
+        
+        int maxSize = -1;
+        List<Integer> finalRes = null;
+        for(Iterator<LinkedList<Integer>> iter = res.iterator(); iter.hasNext(); ){
+            List<Integer> l = iter.next();
+            if(l.size() > maxSize){
+                maxSize = l.size();
+                finalRes = l;
+            }
+        }
+        return finalRes;
+    }
+}
+
+//6%
